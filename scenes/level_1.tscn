@@ -9,9 +9,19 @@ size = Vector2(264, 104)
 
 [node name="Player" parent="." instance=ExtResource("1_014kd")]
 
+[node name="Camera2D2" type="Camera2D" parent="Player"]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(112, 56)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(20, -4)
 shape = SubResource("RectangleShape2D_014kd")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D"]
+offset_left = -112.0
+offset_top = -56.0
+offset_right = 152.0
+offset_bottom = 48.0
