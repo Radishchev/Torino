@@ -6,6 +6,7 @@
 size = Vector2(9, 12)
 
 [node name="egg" type="RigidBody2D"]
+collision_layer = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -1)
