@@ -98,9 +98,7 @@ egg_scene = ExtResource("2_qhqgy")
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_y4r1p")
 animation = &"flying"
-autoplay = "flying"
-frame = 7
-frame_progress = 1.0
+autoplay = "idle"
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
