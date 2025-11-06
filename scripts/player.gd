@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var flap_strength: float = -250.0
 @export var move_acceleration: float = 180.0
 @export var max_speed: float = 180.0
-@export var drift_friction: float = 0.1
+@export var drift_friction: float = 0.03
 @export var crash_speed: float = 450.0
 
 # --- Egg Drop ---
