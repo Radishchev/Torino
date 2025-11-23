@@ -3,16 +3,17 @@
 [ext_resource type="Texture2D" uid="uid://ddjd5nmgbu2g2" path="res://assets/egg.png" id="1_maxla"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_maxla"]
-radius = 1.7
-height = 4.2
+radius = 5.0
+height = 12.0
 
 [node name="egg" type="RigidBody2D"]
 collision_layer = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-0.15, -0.35)
-scale = Vector2(0.34375, 0.34374997)
+position = Vector2(-0.4, -0.7)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_maxla")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.7, 0.7)
 shape = SubResource("CapsuleShape2D_maxla")
