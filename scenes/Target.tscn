@@ -1,0 +1,120 @@
+[gd_scene load_steps=15 format=3 uid="uid://3yrmxoj5q5pb"]
+
+[ext_resource type="Texture2D" uid="uid://dlwtkj32hwlti" path="res://assets/Free-Homeless-Character-Sprite-Sheets-Pixel-Art/Homeless_3/Idle_2.png" id="1_n13nt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n13nt"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ligy1"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3xmu0"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r15hg"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5bgov"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ekue0"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yc8bm"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lfte7"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(896, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vjn2e"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(1024, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xghsm"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(1152, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_08bb2"]
+atlas = ExtResource("1_n13nt")
+region = Rect2(1280, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c2j8a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n13nt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ligy1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3xmu0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r15hg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5bgov")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ekue0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yc8bm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lfte7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vjn2e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xghsm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_08bb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n13nt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n13nt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n13nt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n13nt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n13nt")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_j7jce"]
+points = PackedVector2Array(-4, -1, 4, -1, 5, -15, 8, -19, 7, -28, -2, -28, -7, -16)
+
+[node name="Target" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -26.6)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_c2j8a")
+animation = &"Idle"
+autoplay = "Idle"
+frame = 1
+frame_progress = 0.63953006
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("ConvexPolygonShape2D_j7jce")

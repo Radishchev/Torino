@@ -11,9 +11,16 @@ config_version=5
 [application]
 
 config/name="Torino"
-run/main_scene="uid://o215hal5gp1h"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+run/main_scene="uid://7neu57f0bhxq"
+config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/resizable=false
+window/stretch/mode="viewport"
+window/stretch/aspect="ignore"
+window/vsync/vsync_mode=2
 
 [input]
 
