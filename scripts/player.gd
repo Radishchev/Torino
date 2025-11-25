@@ -12,8 +12,8 @@ extends CharacterBody2D
 @export var egg_scene: PackedScene
 @export var max_eggs_per_level := 3
 
-var eggs_used := 0              # how many eggs the player has dropped
-var egg_stack: Array = []       # stores egg instances placed
+var eggs_used := 0
+var egg_stack: Array = []
 
 # --- Animation ---
 @export var idle_anim_name := "idle"
@@ -25,19 +25,17 @@ var air_time := 0.0
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 
 var spawn_point: Vector2
-var drifting: bool = false
+var drifting := false
 
-var hud: Node = null     # <------ HUD reference
+var hud: Node = null
 
 
 func _ready() -> void:
 	spawn_point = global_position
 
-	# Get HUD from level scene
 	hud = get_tree().current_scene.get_node("HUD")
 	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
 
-	# Initial animation state
 	if is_on_floor():
 		anim.play(idle_anim_name)
 	else:
@@ -47,7 +45,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	velocity.y += gravity * delta
 
-	var direction = Input.get_axis("move_left", "move_right")
+	var direction := Input.get_axis("move_left", "move_right")
 
 	if direction != 0:
 		drifting = false
@@ -94,32 +92,36 @@ func _input(event):
 		die()
 
 
+####################################################
+###           DROP EGG (unchanged)               ###
+####################################################
+
 func drop_egg():
 	if eggs_used >= max_eggs_per_level:
 		print("⚠️ No eggs remaining for this level.")
-		return
-
-	if egg_scene == null:
-		print("❌ Egg scene not assigned!")
 		return
 
 	var egg = egg_scene.instantiate()
 	egg.global_position = global_position + Vector2(0, 16)
 	get_parent().add_child(egg)
 
+	# Connect signals IMMEDIATELY (important!)
+	egg.egg_landed.connect(_on_egg_landed)
+	egg.egg_broken.connect(_on_egg_broken)
+
 	egg_stack.append(egg)
 	eggs_used += 1
 
 	spawn_point = egg.global_position
 
-	if egg.has_method("mark_as_checkpoint"):
-		egg.mark_as_checkpoint()
-
 	print("🥚 Egg placed:", eggs_used, "/", max_eggs_per_level)
 
-	# HUD update
 	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
 
+
+####################################################
+###               DEATH LOGIC                    ###
+####################################################
 
 func die() -> void:
 	print("💀 Player crashed!")
@@ -128,27 +130,53 @@ func die() -> void:
 		var last_egg = egg_stack.back()
 		egg_stack.erase(last_egg)
 
-		if last_egg.has_signal("egg_broken"):
-			last_egg.egg_broken.connect(_on_egg_broken.bind(last_egg))
-			last_egg.break_egg()
+		# If the egg broke from landing
+		if last_egg.was_finalized and last_egg.broke:
+			# Egg already emitted egg_broken, spawn point already handled
+			respawn_at_spawn_point()
+
+		# If egg survived landing (normal checkpoint)
 		else:
 			spawn_point = last_egg.global_position
 			last_egg.queue_free()
 			respawn_at_spawn_point()
+
 	else:
 		print("🚨 All eggs used — restarting from beginning.")
 		get_tree().reload_current_scene()
 
 
+####################################################
+###          EGG SIGNAL HANDLERS                ###
+####################################################
+
+func _on_egg_landed(egg):
+	# Egg survived impact -> usable checkpoint
+	egg.was_finalized = true
+	egg.broke = false
+	print("✨ Egg survived landing")
+
+
 func _on_egg_broken(egg):
-	spawn_point = egg.global_position
-	respawn_at_spawn_point()
+	egg.was_finalized = true
+	egg.broke = true
+	print("💥 Egg broke on landing")
 
-	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
+	# Remove broken egg from stack
+	egg_stack.erase(egg)
 
-	print("🕊️ Respawned. Eggs left:", max_eggs_per_level - eggs_used)
+	# Broken eggs DO NOT update spawn point (player should respawn at previous egg)
 
+
+####################################################
+###                RESPAWN LOGIC                 ###
+####################################################
 
 func respawn_at_spawn_point():
 	global_position = spawn_point
 	velocity = Vector2.ZERO
+
+
+# fallback remap implementation
+func remap(value, in_min, in_max, out_min, out_max) -> float:
+	return lerp(out_min, out_max, (value - in_min) / (in_max - in_min))

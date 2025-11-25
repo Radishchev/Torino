@@ -1,12 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3eufrdqb7hba"]
+[gd_scene load_steps=4 format=3 uid="uid://b3eufrdqb7hba"]
 
 [ext_resource type="Texture2D" uid="uid://ddjd5nmgbu2g2" path="res://assets/egg.png" id="1_maxla"]
+[ext_resource type="Script" uid="uid://dnv1r6nrwh7s8" path="res://scripts/egg.gd" id="1_qlus4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_maxla"]
-size = Vector2(8, 10)
+size = Vector2(9, 12)
 
 [node name="egg" type="RigidBody2D"]
-collision_layer = 3
+contact_monitor = true
+max_contacts_reported = 8
+script = ExtResource("1_qlus4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -1)
@@ -14,4 +17,5 @@ scale = Vector2(0.9, 0.9)
 texture = ExtResource("1_maxla")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_maxla")
