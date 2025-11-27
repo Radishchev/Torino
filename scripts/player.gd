@@ -121,8 +121,8 @@ func drop_egg():
 		return
 
 	var egg = egg_scene.instantiate()
-	egg.global_position = global_position + Vector2(0, 16)
 	get_parent().add_child(egg)
+	egg.global_position = global_position + Vector2(0, 16)
 
 	egg.egg_landed.connect(_on_egg_landed)
 	egg.egg_broken.connect(_on_egg_broken)
@@ -197,24 +197,27 @@ func remap(value, in_min, in_max, out_min, out_max) -> float:
 
 # RoomDetector callback: called when RoomDetector Area2D enters a Room Area2D
 func _on_room_detector_area_entered(area: Area2D) -> void:
+	# Check if the area has a collision shape
 	if not area.has_node("CollisionShape2D"):
 		return
 
 	var cs: CollisionShape2D = area.get_node("CollisionShape2D")
-
+	
+	# Ensure it is a Rectangle
 	if cs.shape is RectangleShape2D:
-		var room_size = cs.shape.extents * 2.0
-		var room_center := area.global_position   # FIXED!
+		# 1. Use global_scale to account for any resizing you did in the editor
+		# 2. In Godot 4, use .size. If Godot 3, use .extents * 2
+		
+		# FOR GODOT 4:
+		var size_of_shape = cs.shape.size 
+		
+		# FOR GODOT 3 (Uncomment if using Godot 3):
+		# var size_of_shape = cs.shape.extents * 2.0
 
-		emit_signal("room_changed", room_center, room_size)
-	# We assume rooms use RectangleShape2D; compute size and center
-	if cs.shape is RectangleShape2D:
-		var extents: Vector2 = (cs.shape as RectangleShape2D).extents
-		var room_size: Vector2 = extents * 2.0
-		# use cs.global_position as room center (cs is child of Area2D, this is consistent)
+		# Apply the node's scale to the shape size
+		var room_size: Vector2 = size_of_shape * cs.global_scale
 		var room_center: Vector2 = cs.global_position
 
-		# Emit signal so camera (or level) can react
 		emit_signal("room_changed", room_center, room_size)
 
 		# Debug

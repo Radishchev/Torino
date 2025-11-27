@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://dnv1r6nrwh7s8" path="res://scripts/egg.gd" id="1_qlus4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_maxla"]
-size = Vector2(8, 10)
+size = Vector2(9, 12)
 
 [node name="egg" type="RigidBody2D"]
 contact_monitor = true
@@ -16,5 +16,5 @@ position = Vector2(0, -1)
 texture = ExtResource("1_maxla")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 1)
+position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_maxla")
