@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://8ispcgdeb33k"]
+[gd_scene load_steps=6 format=3 uid="uid://8ispcgdeb33k"]
 
 [ext_resource type="Script" uid="uid://cdb81uyjcvkta" path="res://scripts/hud.gd" id="1_oo0fn"]
 [ext_resource type="Texture2D" uid="uid://cjieadttrisv3" path="res://assets/egg(1).png" id="2_oo0fn"]
 [ext_resource type="Texture2D" uid="uid://d1cr7t5hkgdw8" path="res://assets/Pause.png" id="3_5ysmq"]
+[ext_resource type="Texture2D" uid="uid://d3phhawb41a7r" path="res://assets/Plume 16x16.png" id="3_6fi6k"]
+[ext_resource type="FontFile" uid="uid://uo8yppjo1jc2" path="res://assets/BoldPixels.ttf" id="4_uo2fv"]
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 3
@@ -14,6 +16,27 @@ offset_left = 25.0
 offset_top = 25.0
 offset_right = 65.0
 offset_bottom = 65.0
+
+[node name="FeatherContainer" type="HBoxContainer" parent="."]
+offset_left = 20.0
+offset_top = 81.0
+offset_right = 63.0
+offset_bottom = 104.0
+scale = Vector2(3, 3)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="FeatherIcon" type="TextureRect" parent="FeatherContainer"]
+layout_mode = 2
+texture = ExtResource("3_6fi6k")
+stretch_mode = 5
+
+[node name="FeatherLabel" type="Label" parent="FeatherContainer" groups=["feather"]]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_uo2fv")
+theme_override_font_sizes/font_size = 16
+text = "X 0"
 
 [node name="PauseButton" type="TextureButton" parent="."]
 custom_minimum_size = Vector2(48, 48)

@@ -29,13 +29,20 @@ var drifting := false
 
 var hud: Node = null
 
+# -------- FEATHER COUNT --------
+var feather_count := 0
+
 
 func _ready() -> void:
 	spawn_point = global_position
+	Globals.register_player(self)
 
+	# Get HUD
 	hud = get_tree().current_scene.get_node("HUD")
 	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
+	hud.update_feathers_collected(feather_count)
 
+	# Animation setup
 	if is_on_floor():
 		anim.play(idle_anim_name)
 	else:
@@ -83,6 +90,8 @@ func _physics_process(delta: float) -> void:
 
 	if abs(velocity.x) > crash_speed:
 		die()
+		
+	
 
 
 func _input(event):
@@ -93,7 +102,17 @@ func _input(event):
 
 
 ####################################################
-###           DROP EGG (unchanged)               ###
+###        FEATHER SIGNAL HANDLER                ###
+####################################################
+
+func _on_feather_collected():
+	feather_count += 1
+	hud.update_feathers_collected(feather_count)
+	print("Feathers:", feather_count)
+
+
+####################################################
+###                DROP EGG                      ###
 ####################################################
 
 func drop_egg():
@@ -105,7 +124,6 @@ func drop_egg():
 	egg.global_position = global_position + Vector2(0, 16)
 	get_parent().add_child(egg)
 
-	# Connect signals IMMEDIATELY (important!)
 	egg.egg_landed.connect(_on_egg_landed)
 	egg.egg_broken.connect(_on_egg_broken)
 
@@ -120,7 +138,7 @@ func drop_egg():
 
 
 ####################################################
-###               DEATH LOGIC                    ###
+###                DEATH LOGIC                   ###
 ####################################################
 
 func die() -> void:
@@ -130,28 +148,23 @@ func die() -> void:
 		var last_egg = egg_stack.back()
 		egg_stack.erase(last_egg)
 
-		# If the egg broke from landing
 		if last_egg.was_finalized and last_egg.broke:
-			# Egg already emitted egg_broken, spawn point already handled
 			respawn_at_spawn_point()
-
-		# If egg survived landing (normal checkpoint)
 		else:
 			spawn_point = last_egg.global_position
-			last_egg.queue_free()
+			last_egg.call_deferred("queue_free")
 			respawn_at_spawn_point()
 
 	else:
 		print("🚨 All eggs used — restarting from beginning.")
-		get_tree().reload_current_scene()
+		get_tree().call_deferred("reload_current_scene")
 
 
 ####################################################
-###          EGG SIGNAL HANDLERS                ###
+###          EGG SIGNAL HANDLERS                 ###
 ####################################################
 
 func _on_egg_landed(egg):
-	# Egg survived impact -> usable checkpoint
 	egg.was_finalized = true
 	egg.broke = false
 	print("✨ Egg survived landing")
@@ -161,11 +174,7 @@ func _on_egg_broken(egg):
 	egg.was_finalized = true
 	egg.broke = true
 	print("💥 Egg broke on landing")
-
-	# Remove broken egg from stack
 	egg_stack.erase(egg)
-
-	# Broken eggs DO NOT update spawn point (player should respawn at previous egg)
 
 
 ####################################################
@@ -180,3 +189,15 @@ func respawn_at_spawn_point():
 # fallback remap implementation
 func remap(value, in_min, in_max, out_min, out_max) -> float:
 	return lerp(out_min, out_max, (value - in_min) / (in_max - in_min))
+
+
+func _on_room_detector_area_entered(area: Area2D) -> void:
+	var collision_shape: CollisionShape2D = area.get_node("CollisionShape2D")
+
+	var rect = collision_shape.shape.extents * 2.0
+	var size = rect
+
+	# The center of the room area:
+	var center := area.global_position
+
+	Globals.change_room(center, size)

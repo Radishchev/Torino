@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dgljll54dw0rr"]
+
+[ext_resource type="Texture2D" uid="uid://d3phhawb41a7r" path="res://assets/Plume 16x16.png" id="1_f7sq6"]
+[ext_resource type="Script" uid="uid://cgxvwbctu32nj" path="res://scripts/feather.gd" id="1_uauuc"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uauuc"]
+radius = 4.99972
+height = 19.9989
+
+[node name="Feather" type="Area2D"]
+script = ExtResource("1_uauuc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_f7sq6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 0)
+rotation = 0.632923
+shape = SubResource("CapsuleShape2D_uauuc")

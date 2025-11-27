@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bm6qcm1ld6yfo"]
+
+[ext_resource type="Script" uid="uid://e2tatmj28g3h" path="res://scripts/water_hurt_box.gd" id="1_j4rxr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xmcfq"]
+size = Vector2(16, 16)
+
+[node name="WaterHurtBox" type="Area2D"]
+script = ExtResource("1_j4rxr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 8)
+shape = SubResource("RectangleShape2D_xmcfq")

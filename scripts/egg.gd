@@ -10,9 +10,8 @@ signal egg_landed
 
 var last_velocity := Vector2.ZERO
 
-# These MUST exist so the Player can assign them
-var was_finalized := false   # true once the egg has landed or broken
-var broke := false           # true if egg broke on landing
+var was_finalized := false
+var broke := false
 
 
 func _ready():
@@ -20,6 +19,7 @@ func _ready():
 	max_contacts_reported = 8
 	freeze = false
 
+	# Godot 4: body_shape_entered is OK but must not mutate inside callback
 	connect("body_shape_entered", _on_body_entered)
 
 
@@ -33,24 +33,28 @@ func _on_body_entered(_rid, _body, _body_shape, _local_shape):
 
 	was_finalized = true
 
-	var impact_speed = abs(last_velocity.y)
-	print("Egg impact:", impact_speed)
+	var impact = abs(last_velocity.y)
+	print("Egg impact:", impact)
 
-	if impact_speed > break_velocity_threshold:
+	if impact > break_velocity_threshold:
 		broke = true
-		break_egg()
+		call_deferred("break_egg_safe")
 	else:
 		broke = false
-		land_egg()
+		call_deferred("land_egg_safe")
 
 
-func land_egg():
+###############################################################
+### SAFE LAND LOGIC (executed deferred)
+###############################################################
+
+func land_egg_safe():
 	if used:
 		return
 
 	print("✨ Egg survived landing")
 
-	# Freeze in place
+	# Freeze safely
 	freeze = true
 	freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
 	sleeping = true
@@ -60,12 +64,11 @@ func land_egg():
 	emit_signal("egg_landed", self)
 
 
-func mark_as_checkpoint():
-	if not used:
-		modulate = Color(1, 1, 0.5)
+###############################################################
+### SAFE BREAK LOGIC (executed deferred)
+###############################################################
 
-
-func break_egg():
+func break_egg_safe():
 	if used:
 		return
 
@@ -73,18 +76,29 @@ func break_egg():
 	print("💥 Egg breaking...")
 
 	if shape:
-		shape.disabled = true
+		shape.call_deferred("set_disabled", true)
 
-	collision_layer = 0
-	collision_mask = 0
+	# Disable collisions safely
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
 
-	# Freeze physics
-	freeze = true
-	freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
-	sleeping = true
+	# Freeze body safely
+	set_deferred("freeze", true)
+	set_deferred("freeze_mode", RigidBody2D.FREEZE_MODE_KINEMATIC)
+	set_deferred("sleeping", true)
 
 	modulate = Color(0.6, 0.6, 0.6, 0.5)
 
 	emit_signal("egg_broken", self)
 
+	# Destroy safely
 	call_deferred("queue_free")
+
+
+###############################################################
+### Optional: Visual indicator when used
+###############################################################
+
+func mark_as_checkpoint():
+	if not used:
+		modulate = Color(1, 1, 0.5)
