@@ -15,9 +15,9 @@ run/main_scene="uid://o215hal5gp1h"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
+[display]
 
-Globals="*res://scenes/globals.tscn"
+window/stretch/mode="canvas_items"
 
 [input]
 

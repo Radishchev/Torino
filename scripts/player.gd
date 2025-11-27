@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+signal room_changed(room_center: Vector2, room_size: Vector2)
+
+
 # --- Movement Settings ---
 @export var gravity: float = 800.0
 @export var flap_strength: float = -250.0
@@ -35,7 +38,6 @@ var feather_count := 0
 
 func _ready() -> void:
 	spawn_point = global_position
-	Globals.register_player(self)
 
 	# Get HUD
 	hud = get_tree().current_scene.get_node("HUD")
@@ -90,8 +92,6 @@ func _physics_process(delta: float) -> void:
 
 	if abs(velocity.x) > crash_speed:
 		die()
-		
-	
 
 
 func _input(event):
@@ -191,13 +191,31 @@ func remap(value, in_min, in_max, out_min, out_max) -> float:
 	return lerp(out_min, out_max, (value - in_min) / (in_max - in_min))
 
 
+####################################################
+###              ROOM DETECTOR                   ###
+####################################################
+
+# RoomDetector callback: called when RoomDetector Area2D enters a Room Area2D
 func _on_room_detector_area_entered(area: Area2D) -> void:
-	var collision_shape: CollisionShape2D = area.get_node("CollisionShape2D")
+	if not area.has_node("CollisionShape2D"):
+		return
 
-	var rect = collision_shape.shape.extents * 2.0
-	var size = rect
+	var cs: CollisionShape2D = area.get_node("CollisionShape2D")
 
-	# The center of the room area:
-	var center := area.global_position
+	if cs.shape is RectangleShape2D:
+		var room_size = cs.shape.extents * 2.0
+		var room_center := area.global_position   # FIXED!
 
-	Globals.change_room(center, size)
+		emit_signal("room_changed", room_center, room_size)
+	# We assume rooms use RectangleShape2D; compute size and center
+	if cs.shape is RectangleShape2D:
+		var extents: Vector2 = (cs.shape as RectangleShape2D).extents
+		var room_size: Vector2 = extents * 2.0
+		# use cs.global_position as room center (cs is child of Area2D, this is consistent)
+		var room_center: Vector2 = cs.global_position
+
+		# Emit signal so camera (or level) can react
+		emit_signal("room_changed", room_center, room_size)
+
+		# Debug
+		# print("Player: entered room:", area.name, "center=", room_center, "size=", room_size)

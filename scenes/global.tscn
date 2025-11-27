@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://buqsimfv2u0ja"]
+
+[sub_resource type="GDScript" id="GDScript_0hv6v"]
+script/source = "extends Node
+
+var player_camera: Camera2D
+var player: Node2D
+
+var room_pause: bool = false
+@export var room_pause_time: float = 0.2
+
+enum {
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT
+}
+
+func _ready() -> void:
+	# Wait one frame so the Level scene fully loads
+	await get_tree().process_frame
+
+	var scene = get_tree().current_scene
+	
+	# Try to find nodes
+	player_camera = scene.get_node_or_null(\"Camera2D\")
+	player = scene.get_node_or_null(\"Player\")
+
+	# Debug checks
+	if player_camera == null:
+		push_warning(\"⚠ Global: Could not find Camera2D in the current scene.\")
+	if player == null:
+		push_warning(\"⚠ Global: Could not find Player in the current scene.\")
+
+
+func change_room(room_center: Vector2, room_size: Vector2) -> void:
+	if player_camera == null:
+		push_warning(\"⚠ Global: player_camera is null — cannot change room.\")
+		return
+
+	player_camera.current_room_center = room_center
+	player_camera.current_room_size = room_size
+"
+
+[node name="Global" type="Node"]
+script = SubResource("GDScript_0hv6v")

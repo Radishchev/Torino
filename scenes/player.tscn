@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bywv0h7vdq3xh"]
+[gd_scene load_steps=16 format=3 uid="uid://bywv0h7vdq3xh"]
 
 [ext_resource type="Script" uid="uid://gxahxpelw7k2" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://cor72fxwuxj7v" path="res://assets/Pixel Art Bird 16x16/BirdSprite.png" id="2_g2els"]
@@ -90,9 +90,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d2wvv"]
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
-size = Vector2(0, 0)
-
 [node name="Player" type="CharacterBody2D" groups=["bird"]]
 script = ExtResource("1_g2els")
 egg_scene = ExtResource("2_qhqgy")
@@ -107,13 +104,3 @@ flip_h = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_d2wvv")
-
-[node name="RoomDetector" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 128
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RoomDetector"]
-position = Vector2(0, -7)
-shape = SubResource("RectangleShape2D_qhqgy")
-
-[connection signal="area_entered" from="RoomDetector" to="." method="_on_room_detector_area_entered"]
