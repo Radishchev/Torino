@@ -1,0 +1,132 @@
+[gd_scene load_steps=5 format=3 uid="uid://4kiavyih515u"]
+
+[ext_resource type="Script" uid="uid://c8klntwsyj0d0" path="res://scripts/setting_menu.gd" id="1_t1vjc"]
+[ext_resource type="VideoStream" uid="uid://cu0wos3v55tg" path="res://assets/Game_Background_Animated_Video_Generation.ogv" id="2_lrjtk"]
+[ext_resource type="Shader" uid="uid://bbtcqsbn4a16f" path="res://scenes/Main_Menu.gdshader" id="3_m7anh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qw82l"]
+shader = ExtResource("3_m7anh")
+shader_parameter/blur_amount = 3.305
+
+[node name="Setting" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t1vjc")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+stream = ExtResource("2_lrjtk")
+autoplay = true
+loop = true
+bus = &"Music"
+
+[node name="BlurLayer" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_qw82l")
+layout_mode = 0
+offset_right = 1165.0
+offset_bottom = 658.0
+color = Color(1, 1, 1, 0)
+
+[node name="Music_Slider" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 536.0
+offset_top = 512.0
+offset_right = 704.0
+offset_bottom = 536.0
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Sound_Slider" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 536.0
+offset_top = 456.0
+offset_right = 704.0
+offset_bottom = 480.0
+
+[node name="Sound_Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 456.0
+offset_right = 504.0
+offset_bottom = 479.0
+text = "Sound"
+horizontal_alignment = 1
+
+[node name="Music_Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 512.0
+offset_right = 504.0
+offset_bottom = 535.0
+text = "Music"
+horizontal_alignment = 1
+
+[node name="Game_setting_Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 504.0
+offset_top = 208.0
+offset_right = 648.0
+offset_bottom = 240.0
+theme_override_font_sizes/font_size = 20
+text = "Game Setting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 272.0
+offset_right = 632.0
+offset_bottom = 303.0
+text = "Reset Game"
+
+[node name="Volume_setting_Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 496.0
+offset_top = 400.0
+offset_right = 656.0
+offset_bottom = 432.0
+theme_override_font_sizes/font_size = 20
+text = "Volume Setting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 104.0
+offset_right = 632.0
+offset_bottom = 152.0
+theme_override_font_sizes/font_size = 30
+text = "Setting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Back_Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 456.0
+offset_top = 592.0
+offset_right = 504.0
+offset_bottom = 623.0
+text = "Back"
+
+[node name="Save_Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 648.0
+offset_top = 592.0
+offset_right = 696.0
+offset_bottom = 623.0
+text = "Save
+"
+
+[connection signal="value_changed" from="Music_Slider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="Sound_Slider" to="." method="_on_sound_slider_value_changed"]
+[connection signal="pressed" from="Back_Button" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="Save_Button" to="." method="_on_save_button_pressed"]
