@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-signal room_changed(room_center: Vector2, room_size: Vector2)
+signal room_changed(room_center: Vector2, room_size: Vector2, room_area: Area2D)
 
 
 # --- Movement Settings ---
@@ -218,7 +218,7 @@ func _on_room_detector_area_entered(area: Area2D) -> void:
 		var room_size: Vector2 = size_of_shape * cs.global_scale
 		var room_center: Vector2 = cs.global_position
 
-		emit_signal("room_changed", room_center, room_size)
+		emit_signal("room_changed", room_center, room_size, area)
 
 		# Debug
 		# print("Player: entered room:", area.name, "center=", room_center, "size=", room_size)
