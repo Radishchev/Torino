@@ -35,21 +35,40 @@ var hud: Node = null
 # -------- FEATHER COUNT --------
 var feather_count := 0
 
-
 func _ready() -> void:
+
+	print("LEVEL 1 READY!!!")
+
+	await get_tree().process_frame
+
+	# Load saved spawn
+	if FileAccess.file_exists("user://save.dat"):
+
+		var file = FileAccess.open("user://save.dat", FileAccess.READ)
+		var data = file.get_var()
+
+		if data["level"] == get_tree().current_scene.scene_file_path:
+
+			var nest = get_node_or_null(data["nest"])
+
+			if nest:
+				global_position = nest.get_node("Marker2D").global_position
+				print("🔁 Loaded spawn from nest:", data["nest"])
+
 	spawn_point = global_position
 
-	# Get HUD
+
+	# HUD
 	hud = get_tree().current_scene.get_node("HUD")
 	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
 	hud.update_feathers_collected(feather_count)
 
-	# Animation setup
+
+	# Animation
 	if is_on_floor():
 		anim.play(idle_anim_name)
 	else:
 		anim.play(fly_anim_name)
-
 
 func _physics_process(delta: float) -> void:
 	velocity.y += gravity * delta

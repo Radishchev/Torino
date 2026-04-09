@@ -83,36 +83,58 @@ func show_room_overview(room_center: Vector2, room_size: Vector2) -> void:
 
 	var player = get_tree().current_scene.get_node("Player")
 
+	# Disable player control
 	player.set_physics_process(false)
 	player.set_process(false)
 
+	# Calculate automatic zoom to fit room
 	var screen_size = get_viewport_rect().size
 
 	var zoom_x = screen_size.x / room_size.x
 	var zoom_y = screen_size.y / room_size.y
 
 	var zoom_value = min(zoom_x, zoom_y)
-
 	var target_zoom = Vector2(zoom_value, zoom_value)
 
+	# -------- ZOOM OUT + PAN TO CENTER (SIMULTANEOUS) --------
 	var tween := create_tween()
 
-	tween.tween_property(self, "global_position", room_center, overview_duration)
-	tween.parallel().tween_property(self, "zoom", target_zoom, overview_duration)
+	tween.set_parallel(true)
+
+	tween.tween_property(self, "global_position", room_center, 1.2)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
+
+	tween.tween_property(self, "zoom", target_zoom, 1.2)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
 
 	await tween.finished
-	await get_tree().create_timer(overview_pause).timeout
 
-	var tween_back := create_tween()
-	tween_back.tween_property(self, "zoom", normal_zoom, overview_duration)
+	# -------- SHOW OVERVIEW FOR 6 SECONDS --------
+	await get_tree().create_timer(6.0).timeout
 
-	await tween_back.finished
+	# -------- RETURN TO PLAYER (PAN + ZOOM TOGETHER) --------
+	var return_tween := create_tween()
+	return_tween.set_parallel(true)
+
+	return_tween.tween_property(self, "zoom", normal_zoom, 1.2)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
+
+	return_tween.tween_property(self, "global_position", player.global_position, 1.2)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
+
+	await return_tween.finished
+
+	# -------- WAIT BEFORE RESUMING GAME --------
+	await get_tree().create_timer(1.5).timeout
 
 	player.set_physics_process(true)
 	player.set_process(true)
 
 	cinematic_mode = false
-
 
 func _calculate_target_position(room_center: Vector2, room_size: Vector2) -> Vector2:
 
