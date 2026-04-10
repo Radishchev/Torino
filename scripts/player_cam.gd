@@ -112,7 +112,7 @@ func show_room_overview(room_center: Vector2, room_size: Vector2) -> void:
 	await tween.finished
 
 	# -------- SHOW OVERVIEW FOR 6 SECONDS --------
-	await get_tree().create_timer(6.0).timeout
+	await get_tree().create_timer(0.0).timeout
 
 	# -------- RETURN TO PLAYER (PAN + ZOOM TOGETHER) --------
 	var return_tween := create_tween()
@@ -129,7 +129,7 @@ func show_room_overview(room_center: Vector2, room_size: Vector2) -> void:
 	await return_tween.finished
 
 	# -------- WAIT BEFORE RESUMING GAME --------
-	await get_tree().create_timer(1.5).timeout
+	#await get_tree().create_timer(1.5).timeout
 
 	player.set_physics_process(true)
 	player.set_process(true)

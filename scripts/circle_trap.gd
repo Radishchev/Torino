@@ -6,6 +6,7 @@ extends Area2D
 
 func _ready():
 	anim.frame_changed.connect(_on_frame_changed)
+	body_entered.connect(_on_body_entered)
 
 
 func _on_frame_changed():
@@ -30,3 +31,7 @@ func _set_hitbox_size(size):
 	# If using RectangleShape2D
 	elif shape is RectangleShape2D:
 		shape.size = Vector2(size, size)
+
+func _on_body_entered(body):
+	if body.has_method("die"):
+		body.die()

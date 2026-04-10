@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Global="*res://scripts/Global.gd"
 Fade="*res://scenes/fade_layer.tscn"
 Debug="*res://scripts/debug.gd"
+NetworkManager="*res://scripts/network_manager.gd"
 
 [display]
 

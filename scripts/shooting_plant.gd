@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 
 @export_enum("up","down","left","right") var animation_direction := "left"
 @export_enum("up","down","left","right") var bullet_direction := "left"
@@ -21,6 +21,7 @@ func _ready():
 	timer.timeout.connect(_shoot)
 
 	anim.frame_changed.connect(_on_frame_changed)
+	body_entered.connect(_on_body_entered)
 
 	timer.start()
 
@@ -64,3 +65,8 @@ func _spawn_bullet():
 
 		bullet.global_position = spawn_pos
 		bullet.set_direction(bullet_direction)
+
+
+func _on_body_entered(body):
+	if body.has_method("die"):
+		body.die()

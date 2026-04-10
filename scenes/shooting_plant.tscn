@@ -422,8 +422,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m2btc"]
 size = Vector2(13, 22)
 
-[node name="ShootingPlant" type="Node2D"]
+[node name="ShootingPlant" type="Area2D"]
 script = ExtResource("1_m2btc")
+shoot_interval = 1.0
 bullet_scene = ExtResource("2_spxi3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

@@ -33,3 +33,23 @@ func _on_play_friends_button_pressed() -> void:
 
 	# Show multiplayer options
 	$MultiplayerPanel.visible = true
+
+func _on_host_button_pressed():
+
+	var player_name = $MultiplayerPanel/LineEdit.text
+	if player_name == "":
+		player_name = "Player"
+
+	NetworkManager.host_game()
+
+	get_tree().change_scene_to_file("res://scenes/level_1.tscn")
+
+func _on_join_button_pressed():
+
+	var ip = $MultiplayerPanel/LineEdit.text
+	if ip == "":
+		ip = "127.0.0.1"
+
+	NetworkManager.join_game(ip)
+
+	get_tree().change_scene_to_file("res://scenes/level_1.tscn")
