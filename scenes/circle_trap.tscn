@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://buvvply1yc4as"]
+[gd_scene load_steps=16 format=3 uid="uid://buvvply1yc4as"]
 
 [ext_resource type="Texture2D" uid="uid://cxcuqg41tc8j0" path="res://assets/Plant.png" id="1_gfhcx"]
+[ext_resource type="Script" uid="uid://oww6lxn5lqw1" path="res://scripts/circle_trap.gd" id="1_tlks7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tlks7"]
 atlas = ExtResource("1_gfhcx")
@@ -87,7 +88,11 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_ep2bf"]
+radius = 20.0
+
 [node name="CircleTrap" type="Area2D"]
+script = ExtResource("1_tlks7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_f6fbh")
@@ -95,3 +100,4 @@ autoplay = "default"
 frame_progress = 0.879341
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ep2bf")

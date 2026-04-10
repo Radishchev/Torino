@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://o215hal5gp1h"]
+[gd_scene load_steps=34 format=3 uid="uid://o215hal5gp1h"]
 
 [ext_resource type="PackedScene" uid="uid://8ispcgdeb33k" path="res://scenes/hud.tscn" id="1_2y5yt"]
 [ext_resource type="PackedScene" uid="uid://bywv0h7vdq3xh" path="res://scenes/player.tscn" id="1_014kd"]
@@ -20,6 +20,8 @@
 [ext_resource type="AudioStream" uid="uid://vxcwp60otvcr" path="res://assets/Sketchbook 2024-04-24_02.ogg" id="17_1s4pk"]
 [ext_resource type="PackedScene" uid="uid://cowk2mrqlcfxy" path="res://scenes/nest.tscn" id="17_isj1j"]
 [ext_resource type="Texture2D" uid="uid://dft11ptbtjbb8" path="res://assets/image.png" id="18_x2xxo"]
+[ext_resource type="PackedScene" uid="uid://csupwa0mnp7il" path="res://scenes/shooting_plant.tscn" id="21_so66j"]
+[ext_resource type="PackedScene" uid="uid://buvvply1yc4as" path="res://scenes/circle_trap.tscn" id="22_tr1x6"]
 
 [sub_resource type="GDScript" id="GDScript_1s4pk"]
 script/source = "extends Node2D
@@ -1254,7 +1256,7 @@ position = Vector2(1016, -53)
 position = Vector2(1000, -336)
 
 [node name="nest" parent="World" instance=ExtResource("17_isj1j")]
-position = Vector2(1025, -210)
+position = Vector2(1025, -207)
 target_nest_path = NodePath("../nest2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -1274,6 +1276,15 @@ z_index = -99
 position = Vector2(1786.0001, -1585)
 scale = Vector2(3.3, 3.3)
 texture = ExtResource("18_x2xxo")
+
+[node name="ShootingPlant" parent="." instance=ExtResource("21_so66j")]
+position = Vector2(850, -658)
+rotation = -3.1724699
+animation_direction = "up"
+bullet_direction = "down"
+
+[node name="CircleTrap" parent="." instance=ExtResource("22_tr1x6")]
+position = Vector2(856, -191)
 
 [connection signal="room_changed" from="Player" to="Camera2D" method="set_room"]
 [connection signal="area_entered" from="Player/RoomDetector" to="Player" method="_on_RoomDetector_area_entered"]
