@@ -59,9 +59,12 @@ func _ready() -> void:
 
 
 	# HUD
-	hud = get_tree().current_scene.get_node("HUD")
-	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
-	hud.update_feathers_collected(feather_count)
+	if is_multiplayer_authority():
+		hud = get_parent().get_node("HUD")
+		
+		if hud:
+			hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
+			hud.update_feathers_collected(feather_count)
 
 
 	# Animation
@@ -71,6 +74,10 @@ func _ready() -> void:
 		anim.play(fly_anim_name)
 
 func _physics_process(delta: float) -> void:
+	
+	if not is_multiplayer_authority():
+		return
+		
 	velocity.y += gravity * delta
 
 	var direction := Input.get_axis("move_left", "move_right")
@@ -114,6 +121,10 @@ func _physics_process(delta: float) -> void:
 
 
 func _input(event):
+
+	if not is_multiplayer_authority():
+		return
+
 	if Input.is_action_just_pressed("drop_egg"):
 		drop_egg()
 	if Input.is_action_just_pressed("death"):
@@ -126,7 +137,8 @@ func _input(event):
 
 func _on_feather_collected():
 	feather_count += 1
-	hud.update_feathers_collected(feather_count)
+	if hud:
+		hud.update_feathers_collected(feather_count)
 	print("Feathers:", feather_count)
 
 
@@ -153,7 +165,8 @@ func drop_egg():
 
 	print("🥚 Egg placed:", eggs_used, "/", max_eggs_per_level)
 
-	hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
+	if hud:
+		hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
 
 
 ####################################################

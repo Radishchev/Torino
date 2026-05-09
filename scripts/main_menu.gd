@@ -32,7 +32,9 @@ func _on_play_friends_button_pressed() -> void:
 	$PlayFriendsButton.visible = false
 
 	# Show multiplayer options
-	$MultiplayerPanel.visible = true
+	get_tree().change_scene_to_file(
+	    "res://scenes/multiplayer_menu.tscn"
+	)
 
 func _on_host_button_pressed():
 
@@ -40,9 +42,9 @@ func _on_host_button_pressed():
 	if player_name == "":
 		player_name = "Player"
 
-	#NetworkManager.host_game()
+	NetworkManager.host_game()
 
-	get_tree().change_scene_to_file("res://scenes/level_1.tscn")
+	get_tree().change_scene_to_file("res://scenes/multiplayer.tscn")
 
 func _on_join_button_pressed():
 
@@ -50,6 +52,6 @@ func _on_join_button_pressed():
 	if ip == "":
 		ip = "127.0.0.1"
 
-	#NetworkManager.join_game(ip) d d
+	NetworkManager.join_game(ip)
 
-	get_tree().change_scene_to_file("res://scenes/level_1.tscn")
+	get_tree().change_scene_to_file("res://scenes/multiplayer.tscn")

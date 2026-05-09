@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://cebano542vgs5"]
+
+[ext_resource type="Script" uid="uid://c8l151u5l0chl" path="res://scripts/multiplayer_menu.gd" id="1_m4p4h"]
+
+[node name="MultiplayerMenu" type="Control" unique_id=102722401]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 208.0
+offset_top = 35.0
+offset_right = 208.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m4p4h")
+
+[node name="TitleLabel" type="Label" parent="." unique_id=942693638]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="UsernameInput" type="LineEdit" parent="." unique_id=2114061200]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 92.0
+offset_right = 289.5
+offset_bottom = 123.0
+placeholder_text = "Enter Username"
+
+[node name="HostButton" type="Button" parent="." unique_id=198625445]
+layout_mode = 0
+offset_left = 431.0
+offset_top = 117.0
+offset_right = 525.0
+offset_bottom = 148.0
+text = "Host Game"
+
+[node name="GamesLabel" type="Label" parent="." unique_id=362204400]
+layout_mode = 0
+offset_left = 561.0
+offset_top = 223.0
+offset_right = 689.0
+offset_bottom = 246.0
+text = "Available Games"
+
+[node name="GamesContainer" type="VBoxContainer" parent="." unique_id=2103830418]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TestServer" type="Button" parent="GamesContainer" unique_id=1330951390]
+layout_mode = 2
+text = "BirdArena"
+
+[node name="RefreshButton" type="Button" parent="." unique_id=2010057776]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 247.0
+offset_right = 385.0
+offset_bottom = 278.0
+text = "Refresh Games"
+
+[node name="BackButton" type="Button" parent="." unique_id=1069106214]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 118.0
+offset_right = 195.0
+offset_bottom = 149.0
+text = "Back"
+
+[connection signal="pressed" from="HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="GamesContainer/TestServer" to="." method="_on_test_server_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

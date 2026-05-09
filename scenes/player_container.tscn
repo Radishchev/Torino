@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://dgqyrpt6nxo3h"]
+
+[ext_resource type="PackedScene" uid="uid://8ispcgdeb33k" path="res://scenes/hud.tscn" id="1_gv8qy"]
+[ext_resource type="Script" uid="uid://c800wc7qavhfb" path="res://scripts/player_container.gd" id="1_ldo80"]
+[ext_resource type="PackedScene" uid="uid://bywv0h7vdq3xh" path="res://scenes/player.tscn" id="2_ldo80"]
+[ext_resource type="Script" uid="uid://c2mj37npempms" path="res://scripts/player_cam.gd" id="3_4hg65"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a36gw"]
+size = Vector2(0, 0)
+
+[node name="PlayerContainer" type="Node2D" unique_id=523490663]
+script = ExtResource("1_ldo80")
+
+[node name="HUD" parent="." unique_id=804126410 instance=ExtResource("1_gv8qy")]
+
+[node name="Player" parent="." unique_id=791890667 instance=ExtResource("2_ldo80")]
+z_index = 3
+position = Vector2(-202, 98)
+
+[node name="RoomDetector" type="Area2D" parent="Player" unique_id=507058996]
+collision_layer = 128
+collision_mask = 128
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/RoomDetector" unique_id=57110288]
+shape = SubResource("RectangleShape2D_a36gw")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1553860967]
+zoom = Vector2(2.2, 2.2)
+process_callback = 0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+script = ExtResource("3_4hg65")
+
+[connection signal="area_entered" from="Player/RoomDetector" to="Player" method="_on_RoomDetector_area_entered"]
+[connection signal="area_entered" from="Player/RoomDetector" to="Player" method="_on_room_detector_area_entered"]

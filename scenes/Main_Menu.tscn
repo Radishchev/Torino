@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://obyf1hxokbvj"]
+[gd_scene format=3 uid="uid://obyf1hxokbvj"]
 
 [ext_resource type="Script" uid="uid://dc45dl5yv21xl" path="res://scripts/main_menu.gd" id="1_0bfng"]
 [ext_resource type="Texture2D" uid="uid://cor72fxwuxj7v" path="res://assets/Pixel Art Bird 16x16/BirdSprite.png" id="2_0bfng"]
@@ -184,7 +184,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=395253838]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -193,7 +193,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0bfng")
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=547537290]
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
@@ -202,14 +202,14 @@ autoplay = true
 loop = true
 bus = &"Music"
 
-[node name="BlurLayer" type="ColorRect" parent="."]
+[node name="BlurLayer" type="ColorRect" parent="." unique_id=51744147]
 material = SubResource("ShaderMaterial_d3eho")
 layout_mode = 0
 offset_right = 1165.0
 offset_bottom = 658.0
 color = Color(1, 1, 1, 0)
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="." unique_id=371239685]
 layout_mode = 0
 offset_left = 496.0
 offset_top = 431.0
@@ -218,7 +218,7 @@ offset_bottom = 478.0
 theme_override_font_sizes/font_size = 27
 text = "Solo Flight"
 
-[node name="PlayFriendsButton" type="Button" parent="."]
+[node name="PlayFriendsButton" type="Button" parent="." unique_id=1000257022]
 layout_mode = 0
 offset_left = 496.0
 offset_top = 490.0
@@ -228,7 +228,7 @@ theme_override_font_sizes/font_size = 27
 text = "Play with 
 Friends"
 
-[node name="Button2" type="Button" parent="."]
+[node name="Button2" type="Button" parent="." unique_id=1396779226]
 layout_mode = 0
 offset_left = 529.0
 offset_top = 586.0
@@ -237,13 +237,13 @@ offset_bottom = 631.0
 theme_override_font_sizes/font_size = 27
 text = "Setting"
 
-[node name="PixilFrame0" type="Sprite2D" parent="."]
+[node name="PixilFrame0" type="Sprite2D" parent="." unique_id=2080902935]
 material = SubResource("ShaderMaterial_h8c6n")
 position = Vector2(614, 313)
 scale = Vector2(5, 5)
 texture = ExtResource("4_h8c6n")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=850734260]
 position = Vector2(199, 247)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_yb5uv")
@@ -251,19 +251,19 @@ animation = &"idle"
 autoplay = "idle"
 flip_h = true
 
-[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="." unique_id=625239402]
 position = Vector2(980, 199)
 sprite_frames = SubResource("SpriteFrames_h8c6n")
 animation = &"Idle"
 autoplay = "Idle"
 
-[node name="MultiplayerPanel" type="Panel" parent="."]
+[node name="MultiplayerPanel" type="Panel" parent="." unique_id=767540477]
 visible = false
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="LineEdit" type="LineEdit" parent="MultiplayerPanel"]
+[node name="LineEdit" type="LineEdit" parent="MultiplayerPanel" unique_id=1938150662]
 layout_mode = 0
 offset_left = 482.0
 offset_top = 388.0
@@ -273,7 +273,7 @@ theme_override_font_sizes/font_size = 27
 placeholder_text = "Username"
 alignment = 1
 
-[node name="HostButton" type="Button" parent="MultiplayerPanel"]
+[node name="HostButton" type="Button" parent="MultiplayerPanel" unique_id=787104542]
 layout_mode = 0
 offset_left = 496.0
 offset_top = 462.0
@@ -282,7 +282,7 @@ offset_bottom = 509.0
 theme_override_font_sizes/font_size = 27
 text = "Host Game"
 
-[node name="JoinButton" type="Button" parent="MultiplayerPanel"]
+[node name="JoinButton" type="Button" parent="MultiplayerPanel" unique_id=1059614258]
 layout_mode = 0
 offset_left = 496.0
 offset_top = 531.0

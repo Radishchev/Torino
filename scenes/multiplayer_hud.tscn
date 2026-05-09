@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://7pvubu1jwnag"]
+
+[ext_resource type="Script" uid="uid://cis5yk2uvu6ot" path="res://scripts/multiplayer_hud.gd" id="1_3424s"]
+
+[node name="MultiplayerHUD" type="Control" unique_id=985089033 groups=["hud"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3424s")
+
+[node name="EggLabel" type="Label" parent="." unique_id=234417458]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="HealthLabel" type="Label" parent="." unique_id=464481974]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="DebugLabel" type="Label" parent="." unique_id=71378409]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

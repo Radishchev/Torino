@@ -8,11 +8,15 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Torino"
 run/main_scene="uid://obyf1hxokbvj"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -20,6 +24,7 @@ config/icon="res://icon.svg"
 Global="*res://scripts/Global.gd"
 Fade="*res://scenes/fade_layer.tscn"
 Debug="*res://scripts/debug.gd"
+NetworkManager="*uid://bb5syb31muad7"
 
 [display]
 

@@ -17,14 +17,21 @@ var current_room_size: Vector2 = Vector2.ZERO
 var view_size: Vector2 = Vector2.ZERO
 var zoom_view_size: Vector2 = Vector2.ZERO
 
+# ✅ NEW: reference to local player
+@onready var player = get_parent().get_node_or_null("Player")
+
 
 func _ready() -> void:
 
 	view_size = get_viewport_rect().size
 	normal_zoom = zoom
 
-	var player = get_tree().current_scene.get_node("Player")
-	player.room_changed.connect(_on_room_changed)
+	if not player:
+		push_warning("Camera: Player not found!")
+		return
+
+	if player.is_multiplayer_authority():
+		player.room_changed.connect(_on_room_changed)
 
 	smoothing = 1.0
 	await get_tree().create_timer(0.05).timeout
@@ -32,6 +39,13 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+
+	# ✅ Only run camera for local player
+	if not player:
+		return
+
+	if not player.is_multiplayer_authority():
+		return
 
 	if cinematic_mode:
 		return
@@ -57,9 +71,7 @@ func _on_room_changed(room_center: Vector2, room_size: Vector2, room_area: Area2
 
 	set_room(room_center, room_size)
 
-	# Only trigger overview for RoomC
 	if room_area.name == "RoomC" and not overview_played:
-
 		overview_played = true
 		await show_room_overview(room_center, room_size)
 
@@ -81,13 +93,10 @@ func show_room_overview(room_center: Vector2, room_size: Vector2) -> void:
 	cinematic_mode = true
 	normal_zoom = zoom
 
-	var player = get_tree().current_scene.get_node("Player")
-
-	# Disable player control
+	# ✅ FIX: use local player directly
 	player.set_physics_process(false)
 	player.set_process(false)
 
-	# Calculate automatic zoom to fit room
 	var screen_size = get_viewport_rect().size
 
 	var zoom_x = screen_size.x / room_size.x
@@ -96,53 +105,36 @@ func show_room_overview(room_center: Vector2, room_size: Vector2) -> void:
 	var zoom_value = min(zoom_x, zoom_y)
 	var target_zoom = Vector2(zoom_value, zoom_value)
 
-	# -------- ZOOM OUT + PAN TO CENTER (SIMULTANEOUS) --------
 	var tween := create_tween()
-
 	tween.set_parallel(true)
 
-	tween.tween_property(self, "global_position", room_center, 1.2)\
-		.set_trans(Tween.TRANS_SINE)\
-		.set_ease(Tween.EASE_IN_OUT)
-
-	tween.tween_property(self, "zoom", target_zoom, 1.2)\
-		.set_trans(Tween.TRANS_SINE)\
-		.set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(self, "global_position", room_center, 1.2)
+	tween.tween_property(self, "zoom", target_zoom, 1.2)
 
 	await tween.finished
 
-	# -------- SHOW OVERVIEW FOR 6 SECONDS --------
 	await get_tree().create_timer(0.0).timeout
 
-	# -------- RETURN TO PLAYER (PAN + ZOOM TOGETHER) --------
 	var return_tween := create_tween()
 	return_tween.set_parallel(true)
 
-	return_tween.tween_property(self, "zoom", normal_zoom, 1.2)\
-		.set_trans(Tween.TRANS_SINE)\
-		.set_ease(Tween.EASE_IN_OUT)
-
-	return_tween.tween_property(self, "global_position", player.global_position, 1.2)\
-		.set_trans(Tween.TRANS_SINE)\
-		.set_ease(Tween.EASE_IN_OUT)
+	return_tween.tween_property(self, "zoom", normal_zoom, 1.2)
+	return_tween.tween_property(self, "global_position", player.global_position, 1.2)
 
 	await return_tween.finished
-
-	# -------- WAIT BEFORE RESUMING GAME --------
-	#await get_tree().create_timer(1.5).timeout
 
 	player.set_physics_process(true)
 	player.set_process(true)
 
 	cinematic_mode = false
 
+
 func _calculate_target_position(room_center: Vector2, room_size: Vector2) -> Vector2:
+	
+	if not player:
+		return room_center
 
-	var player_node := get_tree().current_scene.get_node_or_null("Player")
-
-	var p := room_center
-	if player_node != null:
-		p = player_node.global_position
+	var p: Vector2 = player.global_position
 
 	var x_margin := room_size.x - zoom_view_size.x
 	var y_margin := room_size.y - zoom_view_size.y
@@ -153,17 +145,13 @@ func _calculate_target_position(room_center: Vector2, room_size: Vector2) -> Vec
 		result.x = room_center.x
 	else:
 		var half_margin = x_margin * 0.5
-		var left_limit = room_center.x - half_margin
-		var right_limit = room_center.x + half_margin
-		result.x = clamp(p.x, left_limit, right_limit)
+		result.x = clamp(p.x, room_center.x - half_margin, room_center.x + half_margin)
 
 	if y_margin <= 0.0:
 		result.y = room_center.y
 	else:
 		var half_margin = y_margin * 0.5
-		var top_limit = room_center.y - half_margin
-		var bottom_limit = room_center.y + half_margin
-		result.y = clamp(p.y, top_limit, bottom_limit)
+		result.y = clamp(p.y, room_center.y - half_margin, room_center.y + half_margin)
 
 	return result
 
