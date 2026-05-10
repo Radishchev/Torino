@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bywv0h7vdq3xh"]
+[gd_scene format=3 uid="uid://bywv0h7vdq3xh"]
 
 [ext_resource type="Script" uid="uid://gxahxpelw7k2" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://cor72fxwuxj7v" path="res://assets/Pixel Art Bird 16x16/BirdSprite.png" id="2_g2els"]
@@ -90,17 +90,18 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d2wvv"]
 size = Vector2(16, 8)
 
-[node name="Player" type="CharacterBody2D" groups=["bird"]]
+[node name="Player" type="CharacterBody2D" unique_id=1533215368 groups=["bird"]]
+collision_mask = 3
 script = ExtResource("1_g2els")
 egg_scene = ExtResource("2_qhqgy")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1170075076]
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_y4r1p")
 animation = &"flying"
 autoplay = "idle"
 flip_h = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=457782598]
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_d2wvv")

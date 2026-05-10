@@ -19,7 +19,7 @@ layer_0/tile_data = PackedInt32Array(1, 851968, 13, 65537, 851968, 14, 2, 983040
 [node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=1212042264]
 position = Vector2(163, 608)
 
-[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1657270977]
+[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1657270977 groups=["level"]]
 position = Vector2(1039, 616)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=673344244]

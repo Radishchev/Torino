@@ -10,11 +10,11 @@ const PLAYER_SCENE = preload(
 
 func _ready():
 
-	multiplayer.peer_connected.connect(
-		_on_peer_connected
-	)
+	# IMPORTANT
+	# Needed so NetworkManager can find this level
+	add_to_group("level")
 
-	# Host spawns itself
+	# Host spawns itself immediately
 	if multiplayer.is_server():
 
 		spawn_player(
@@ -22,24 +22,28 @@ func _ready():
 		)
 
 
-func _on_peer_connected(id):
-
-	if multiplayer.is_server():
-
-		spawn_player(id)
-
-
 func spawn_player(peer_id):
 
+	# Prevent duplicate players
 	if players.has_node(str(peer_id)):
 		return
 
 	var player = PLAYER_SCENE.instantiate()
 
+	# Peer ID becomes node name
 	player.name = str(peer_id)
 
-	# Use player order instead of peer ID
-	var spawn_index = players.get_child_count()
+	# Correct username from server dictionary
+	player.username = NetworkManager.player_usernames.get(
+		peer_id,
+		"Player"
+	)
+
+	# Add FIRST
+	players.add_child(player, true)
+
+	# Spawn position
+	var spawn_index = players.get_child_count() - 1
 
 	spawn_index = clamp(
 		spawn_index,
@@ -51,11 +55,11 @@ func spawn_player(peer_id):
 		spawn_index
 	).global_position
 
-	players.add_child(player, true)
-
 	print(
 		"Spawned player:",
 		peer_id,
+		" username:",
+		player.username,
 		" at ",
 		player.global_position
 	)

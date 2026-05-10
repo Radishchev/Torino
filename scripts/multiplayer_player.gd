@@ -5,15 +5,45 @@ extends CharacterBody2D
 @export var gravity := 900.0
 
 @onready var camera = $Camera2D
+@onready var username_label = $UsernameLabel
+@onready var health_bar = $HealthBar
+
+
+# Multiplayer synced username
+@export var username := "Player":
+	set(value):
+		username = value
+
+		# Update label immediately if ready
+		if username_label:
+			username_label.text = value
+
+
+@export var max_health := 5
+@export var health := 5:
+	set(value):
+
+		health = clamp(value, 0, max_health)
+
+		if health_bar:
+
+			health_bar.value = health
+
+		if health <= 0:
+
+			die()
 
 
 func _ready():
 
+	# Wait one frame so replication is finished
 	await get_tree().process_frame
 
+	# IMPORTANT
+	# Authority comes from node name
 	set_multiplayer_authority(name.to_int())
 
-	# Activate local camera only
+	# Local player setup
 	if is_multiplayer_authority():
 
 		camera.make_current()
@@ -23,11 +53,20 @@ func _ready():
 		if hud:
 			hud.set_player(self)
 
+	# Username display
+	username_label.text = username
+
+	# Health setup
+	health_bar.max_value = max_health
+	health_bar.value = health
+	
 	print(
 		"Authority:",
 		multiplayer.get_unique_id(),
 		" | Player:",
-		get_multiplayer_authority()
+		get_multiplayer_authority(),
+		" | Username:",
+		username
 	)
 
 
@@ -55,3 +94,7 @@ func _physics_process(delta):
 		velocity.y = flap_force
 
 	move_and_slide()
+
+func die():
+
+	print(username, " died")
