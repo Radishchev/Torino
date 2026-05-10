@@ -96,6 +96,15 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:username")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:health")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_80evv"]
+size = Vector2(16, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2d20i"]
+size = Vector2(16, 8)
 
 [node name="MultiplayerPlayer" type="CharacterBody2D" unique_id=122879260]
 collision_mask = 2
@@ -136,3 +145,19 @@ offset_right = 22.0
 offset_bottom = -13.0
 max_value = 5.0
 value = 5.0
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=531206582]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=358080118]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_80evv")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=281766351]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=377302817]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_2d20i")

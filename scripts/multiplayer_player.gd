@@ -8,6 +8,9 @@ extends CharacterBody2D
 @onready var username_label = $UsernameLabel
 @onready var health_bar = $HealthBar
 
+var egg_stack : Array[EggData] = []
+
+const MAX_EGGS := 3
 
 # Multiplayer synced username
 @export var username := "Player":
@@ -18,6 +21,7 @@ extends CharacterBody2D
 		if username_label:
 			username_label.text = value
 
+var is_dead := false
 
 @export var max_health := 5
 @export var health := 5:
@@ -29,10 +33,11 @@ extends CharacterBody2D
 
 			health_bar.value = health
 
-		if health <= 0:
+		if health <= 0 and !is_dead:
 
 			die()
 
+@onready var attack_area = $AttackArea
 
 func _ready():
 
@@ -92,9 +97,64 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("flap"):
 
 		velocity.y = flap_force
+		
+		attack()
 
 	move_and_slide()
 
 func die():
-
+	is_dead = true
 	print(username, " died")
+
+func attack():
+
+	for area in attack_area.get_overlapping_areas():
+
+		if area.name == "Hurtbox":
+
+			var enemy = area.get_parent()
+
+			if enemy == self:
+				continue
+
+			enemy.take_damage.rpc_id(
+				enemy.get_multiplayer_authority(),
+				1
+			)
+
+			print(
+				username,
+				" hit ",
+				enemy.username
+			)
+			
+@rpc("any_peer")
+func take_damage(amount):
+
+	health -= amount
+	
+	
+	
+	
+func add_egg(egg : EggData):
+
+	if egg_stack.size() >= MAX_EGGS:
+
+		print("Inventory full")
+
+		return false
+
+	egg_stack.push_back(egg)
+
+	print(
+		username,
+		" picked up ",
+		egg.egg_name
+	)
+
+	print(
+		"Current inventory:",
+		egg_stack.size()
+	)
+
+	return true

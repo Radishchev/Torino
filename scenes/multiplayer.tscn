@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://bo2intcjqimh4" path="res://scripts/multiplayer.gd" id="1_4vwpp"]
 [ext_resource type="TileSet" uid="uid://u74tl5t3n31x" path="res://assets/new_tile_set.tres" id="1_crvko"]
 [ext_resource type="PackedScene" uid="uid://7pvubu1jwnag" path="res://scenes/multiplayer_hud.tscn" id="3_pjkx2"]
+[ext_resource type="PackedScene" uid="uid://b5lay31e7mdr" path="res://scenes/eggs/egg_object.tscn" id="4_4vwpp"]
+[ext_resource type="Resource" uid="uid://cafdrqyq4v7rm" path="res://scenes/eggs/resources/heal_egg.tres" id="5_36d77"]
 
 [node name="Multiplayer" type="Node2D" unique_id=561955193]
 script = ExtResource("1_4vwpp")
@@ -30,3 +32,7 @@ spawn_limit = 4
 [node name="UI" type="CanvasLayer" parent="." unique_id=1511868854]
 
 [node name="MultiplayerHUD" parent="UI" unique_id=985089033 instance=ExtResource("3_pjkx2")]
+
+[node name="EggObject" parent="." unique_id=9722509 instance=ExtResource("4_4vwpp")]
+position = Vector2(378, 613)
+egg_data = ExtResource("5_36d77")

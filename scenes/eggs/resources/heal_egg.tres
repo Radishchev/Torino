@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EggData" format=3 uid="uid://cafdrqyq4v7rm"]
+
+[ext_resource type="Script" uid="uid://bipw3saiu1rri" path="res://scenes/eggs/egg_data.gd" id="1_m0oio"]
+[ext_resource type="PackedScene" uid="uid://bq528akryw2sc" path="res://scenes/eggs/effects/heal_effect.tscn" id="1_wm7wi"]
+[ext_resource type="Texture2D" uid="uid://bs6rs4rgdgl0n" path="res://assets/30 Easter Eggs By Albhedos Workshop/10.png" id="2_ksey8"]
+
+[resource]
+script = ExtResource("1_m0oio")
+egg_name = "Heal Egg"
+icon = ExtResource("2_ksey8")
+rarity = 5
+effect_scene = ExtResource("1_wm7wi")
+metadata/_custom_type_script = "uid://bipw3saiu1rri"

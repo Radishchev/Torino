@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://b5lay31e7mdr"]
+
+[ext_resource type="Script" uid="uid://rusiishc2qje" path="res://scripts/egg_object.gd" id="1_7jrhr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wdyre"]
+size = Vector2(15, 19)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sxk15"]
+size = Vector2(15, 19)
+
+[node name="EggObject" type="RigidBody2D" unique_id=9722509]
+script = ExtResource("1_7jrhr")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1285513780]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=182791739]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_wdyre")
+
+[node name="PickupArea" type="Area2D" parent="." unique_id=1036997380]
+collision_layer = 17
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=1199053252]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_sxk15")
