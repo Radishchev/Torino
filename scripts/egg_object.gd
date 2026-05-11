@@ -20,6 +20,7 @@ var broke := false
 
 var last_velocity := Vector2.ZERO
 
+var pickup_blocked := false
 
 @onready var sprite = $Sprite2D
 @onready var pickup_area = $PickupArea
@@ -55,7 +56,8 @@ func _physics_process(delta):
 
 func _on_pickup_area_entered(area):
 	
-	print("Pickup touched:", area.name)
+	if pickup_blocked:
+		return 
 	
 	if used:
 		return

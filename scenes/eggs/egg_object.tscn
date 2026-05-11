@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://rusiishc2qje" path="res://scripts/egg_object.gd" id="1_7jrhr"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7jrhr"]
+bounce = 0.15
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wdyre"]
 size = Vector2(15, 19)
 
@@ -9,6 +12,9 @@ size = Vector2(15, 19)
 size = Vector2(15, 19)
 
 [node name="EggObject" type="RigidBody2D" unique_id=9722509]
+physics_material_override = SubResource("PhysicsMaterial_7jrhr")
+linear_damp = 0.2
+angular_damp = 0.5
 script = ExtResource("1_7jrhr")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1285513780]

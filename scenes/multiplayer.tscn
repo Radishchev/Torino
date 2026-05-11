@@ -36,3 +36,15 @@ spawn_limit = 4
 [node name="EggObject" parent="." unique_id=9722509 instance=ExtResource("4_4vwpp")]
 position = Vector2(378, 613)
 egg_data = ExtResource("5_36d77")
+
+[node name="EggObject2" parent="." unique_id=1798792887 instance=ExtResource("4_4vwpp")]
+position = Vector2(510, 616)
+egg_data = ExtResource("5_36d77")
+
+[node name="EggObject3" parent="." unique_id=964667453 instance=ExtResource("4_4vwpp")]
+position = Vector2(580, 504)
+egg_data = ExtResource("5_36d77")
+
+[node name="EggObject4" parent="." unique_id=1438274693 instance=ExtResource("4_4vwpp")]
+position = Vector2(745, 602)
+egg_data = ExtResource("5_36d77")

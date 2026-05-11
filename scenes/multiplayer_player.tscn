@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c2s7gv315u58f" path="res://scripts/multiplayer_player.gd" id="1_80evv"]
 [ext_resource type="Texture2D" uid="uid://cor72fxwuxj7v" path="res://assets/Pixel Art Bird 16x16/BirdSprite.png" id="2_2d20i"]
+[ext_resource type="PackedScene" uid="uid://b5lay31e7mdr" path="res://scenes/eggs/egg_object.tscn" id="2_k8tkd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
 atlas = ExtResource("2_2d20i")
@@ -99,6 +100,12 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:health")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+properties/3/path = NodePath(".:facing_right")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:current_anim")
+properties/4/spawn = true
+properties/4/replication_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80evv"]
 size = Vector2(16, 8)
@@ -109,6 +116,7 @@ size = Vector2(16, 8)
 [node name="MultiplayerPlayer" type="CharacterBody2D" unique_id=122879260]
 collision_mask = 2
 script = ExtResource("1_80evv")
+egg_object_scene = ExtResource("2_k8tkd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=490624705]
 position = Vector2(0, -8)
