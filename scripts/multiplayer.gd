@@ -1,11 +1,38 @@
 extends Node2D
 
+
+####################################################
+# SCENES
+####################################################
+
 const PLAYER_SCENE = preload(
 	"res://scenes/multiplayer_player.tscn"
 )
 
+const EGG_SCENE = preload(
+	"res://scenes/eggs/egg_object.tscn"
+)
+
+
+####################################################
+# TEST EGG DATA
+####################################################
+
+const HEAL_EGG = preload(
+	"res://scenes/eggs/resources/heal_egg.tres"
+)
+
+
+####################################################
+# NODES
+####################################################
+
 @onready var players = $Players
 @onready var spawn_points = $SpawnPoints
+
+@onready var eggs = $Eggs
+@onready var egg_spawns = $EggSpawns
+@onready var egg_spawner = $EggSpawner
 
 
 ####################################################
@@ -16,12 +43,24 @@ func _ready():
 
 	add_to_group("level")
 
-	# Host spawns immediately
+	####################################################
+	# IMPORTANT
+	# MultiplayerSpawner setup
+	####################################################
+
+	egg_spawner.spawn_function = spawn_network_egg
+
+	####################################################
+	# HOST STARTUP
+	####################################################
+
 	if multiplayer.is_server():
 
 		spawn_player(
 			multiplayer.get_unique_id()
 		)
+
+		spawn_starting_eggs()
 
 
 ####################################################
@@ -30,7 +69,10 @@ func _ready():
 
 func spawn_player(peer_id):
 
-	# Prevent duplicate players
+	####################################################
+	# PREVENT DUPLICATES
+	####################################################
+
 	if players.has_node(str(peer_id)):
 		return
 
@@ -40,10 +82,8 @@ func spawn_player(peer_id):
 	# PLAYER SETUP
 	####################################################
 
-	# Peer ID becomes node name
 	player.name = str(peer_id)
 
-	# Username from NetworkManager
 	player.username = (
 		NetworkManager
 		.player_usernames
@@ -88,3 +128,114 @@ func spawn_player(peer_id):
 		" at ",
 		player.global_position
 	)
+
+
+####################################################
+# STARTING EGGS
+####################################################
+
+func spawn_starting_eggs():
+
+	for spawn in egg_spawns.get_children():
+
+		spawn_egg(
+			HEAL_EGG,
+			spawn.global_position
+		)
+
+
+####################################################
+# NETWORK EGG SPAWNING
+####################################################
+
+func spawn_egg(
+	egg_data : EggData,
+	position : Vector2,
+	start_velocity := Vector2.ZERO
+):
+
+	####################################################
+	# ONLY SERVER SPAWNS
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	####################################################
+	# UNIQUE NETWORK NAME
+	####################################################
+
+	var egg_name = (
+		"Egg_"
+		+ str(Time.get_ticks_usec())
+	)
+
+	####################################################
+	# MultiplayerSpawner handles replication
+	####################################################
+
+	egg_spawner.spawn({
+		"name": egg_name,
+		"egg_resource_path": egg_data.resource_path,
+		"position": position,
+		"velocity": start_velocity
+	})
+
+
+####################################################
+# CALLED AUTOMATICALLY ON ALL PEERS
+####################################################
+
+func spawn_network_egg(data):
+
+	var egg = EGG_SCENE.instantiate()
+	
+	egg.pickup_blocked = true
+
+	####################################################
+	# IMPORTANT
+	# DETERMINISTIC NAME
+	####################################################
+
+	egg.name = data["name"]
+
+	####################################################
+	# LOAD EGG DATA
+	####################################################
+
+	var egg_data = load(
+		data["egg_resource_path"]
+	)
+
+	egg.egg_data = egg_data
+
+	####################################################
+	# TRANSFORM
+	####################################################
+
+	egg.global_position = data["position"]
+
+	egg.linear_velocity = data["velocity"]
+	
+	var timer = get_tree().create_timer(0.35)
+
+	timer.timeout.connect(
+		egg.unblock_pickup
+	)
+
+	####################################################
+	# DEBUG
+	####################################################
+
+	print(
+		"Spawned network egg at ",
+		data["position"]
+	)
+
+	####################################################
+	# IMPORTANT
+	# DO NOT add_child() manually here.
+	# MultiplayerSpawner already does that.
+	####################################################
+
+	return egg

@@ -159,11 +159,12 @@ func _ready():
 
 	# Local player setup
 	if is_multiplayer_authority():
-
+	
 		camera.make_current()
 		
 		world_hearts.visible = false
-
+		
+		@warning_ignore("confusable_local_declaration")
 		var hud = get_tree().get_first_node_in_group("hud")
 
 		if hud:
@@ -368,6 +369,57 @@ func take_damage(amount):
 # INVENTORY
 ####################################################
 
+func get_inventory_paths():
+
+	var paths := []
+
+	for egg in egg_stack:
+
+		paths.push_back(
+			egg.resource_path
+		)
+
+	return paths
+
+
+@rpc("any_peer", "call_local")
+func sync_inventory(paths : Array):
+
+	####################################################
+	# REBUILD LOCAL INVENTORY
+	####################################################
+
+	egg_stack.clear()
+
+	for path in paths:
+
+		var egg_data = load(path)
+
+		if egg_data:
+
+			egg_stack.push_back(egg_data)
+
+	####################################################
+	# UPDATE HUD
+	####################################################
+
+	if is_multiplayer_authority():
+
+		var hud = (
+			get_tree()
+			.get_first_node_in_group("hud")
+		)
+
+		if hud:
+
+			hud.update_eggs(egg_stack)
+
+	print(
+		"Inventory synced:",
+		egg_stack.size()
+	)
+
+
 func add_egg(egg : EggData):
 
 	if egg_stack.size() >= MAX_EGGS:
@@ -376,12 +428,24 @@ func add_egg(egg : EggData):
 
 		return false
 
+	####################################################
+	# SERVER INVENTORY
+	####################################################
+
 	egg_stack.push_back(egg)
-	var hud = get_tree().get_first_node_in_group("hud")
 
-	if hud and is_multiplayer_authority():
+	####################################################
+	# SYNC TO OWNER
+	####################################################
 
-		hud.update_eggs(egg_stack)
+	sync_inventory.rpc_id(
+		get_multiplayer_authority(),
+		get_inventory_paths()
+	)
+
+	####################################################
+	# DEBUG
+	####################################################
 
 	print(
 		username,
@@ -396,6 +460,40 @@ func add_egg(egg : EggData):
 
 	return true
 
+
+@rpc("any_peer")
+func request_remove_egg():
+
+	####################################################
+	# ONLY SERVER MODIFIES TRUE INVENTORY
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	if egg_stack.is_empty():
+		return
+
+	####################################################
+	# REMOVE SERVER EGG
+	####################################################
+
+	egg_stack.pop_back()
+
+	####################################################
+	# RESYNC CLIENT
+	####################################################
+
+	sync_inventory.rpc_id(
+		get_multiplayer_authority(),
+		get_inventory_paths()
+	)
+
+
+####################################################
+# THROW EGG
+####################################################
+
 func throw_egg():
 
 	if egg_stack.is_empty():
@@ -404,20 +502,39 @@ func throw_egg():
 		return
 
 	####################################################
-	# REMOVE EGG FROM INVENTORY
+	# LOCAL PREDICTION
 	####################################################
 
 	var egg_data = egg_stack.pop_back()
 
-	# Update HUD
-	var hud = (
-		get_tree()
-		.get_first_node_in_group("hud")
-	)
+	####################################################
+	# SERVER INVENTORY REMOVAL
+	####################################################
 
-	if hud and is_multiplayer_authority():
+	if multiplayer.is_server():
 
-		hud.update_eggs(egg_stack)
+		if !egg_stack.is_empty():
+
+			egg_stack.pop_back()
+
+	else:
+
+		request_remove_egg.rpc_id(1)
+
+	####################################################
+	# LOCAL HUD UPDATE
+	####################################################
+
+	if is_multiplayer_authority():
+
+		var hud = (
+			get_tree()
+			.get_first_node_in_group("hud")
+		)
+
+		if hud:
+
+			hud.update_eggs(egg_stack)
 
 	####################################################
 	# MOVEMENT DATA
@@ -441,14 +558,12 @@ func throw_egg():
 
 	var throw_vector := Vector2.ZERO
 
-	# Use movement direction
 	if speed_amount > 5.0:
 
 		throw_vector = (
 			current_velocity.normalized()
 		)
 
-	# Standing still fallback
 	else:
 
 		if facing_right:
@@ -484,41 +599,87 @@ func throw_egg():
 	)
 
 	####################################################
-	# CREATE EGG
+	# HOST SPAWNS DIRECTLY
 	####################################################
 
-	var egg = egg_object_scene.instantiate()
+	if multiplayer.is_server():
 
-	egg.egg_data = egg_data
-
-	get_tree().current_scene.add_child(egg)
-
-	egg.global_position = spawn_position
-
-	egg.linear_velocity = final_velocity
+		request_throw_egg(
+			egg_data.resource_path,
+			spawn_position,
+			final_velocity
+		)
 
 	####################################################
-	# PREVENT INSTANT RE-PICKUP
+	# CLIENT REQUESTS SERVER
 	####################################################
 
-	egg.pickup_blocked = true
+	else:
 
-	var timer = (
-		get_tree().create_timer(0.35)
-	)
+		request_throw_egg.rpc_id(
+			1,
+			egg_data.resource_path,
+			spawn_position,
+			final_velocity
+		)
 
-	timer.timeout.connect(func():
-
-		if is_instance_valid(egg):
-
-			egg.pickup_blocked = false
-	)
+	####################################################
+	# DEBUG
+	####################################################
 
 	print(
 		username,
 		" threw ",
 		egg_data.egg_name
 	)
+
+
+####################################################
+# NETWORK THROW
+####################################################
+
+@rpc("any_peer")
+func request_throw_egg(
+	egg_resource_path : String,
+	spawn_position : Vector2,
+	start_velocity : Vector2
+):
+
+	####################################################
+	# ONLY SERVER SPAWNS
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	var egg_data = load(egg_resource_path)
+
+	if egg_data == null:
+		return
+
+	####################################################
+	# GET LEVEL
+	####################################################
+
+	var level = (
+		get_tree()
+		.get_first_node_in_group("level")
+	)
+
+	if level == null:
+		return
+
+	####################################################
+	# USE NETWORK SPAWNER
+	####################################################
+
+	level.spawn_egg(
+		egg_data,
+		spawn_position,
+		start_velocity
+	)
+	
+
 ####################################################
 # UTIL
 ####################################################

@@ -74,7 +74,6 @@ func _ready():
 	# VISUALS
 	###############################################################
 
-	# Set sprite from EggData
 	if egg_data and egg_data.icon:
 
 		sprite.texture = egg_data.icon
@@ -85,6 +84,10 @@ func _ready():
 ###############################################################
 
 func _physics_process(delta):
+	if !multiplayer.is_server():
+
+		freeze = true
+		return
 
 	last_velocity = linear_velocity
 
@@ -95,37 +98,99 @@ func _physics_process(delta):
 
 func _on_pickup_area_entered(area):
 
-	# Temporary throw protection
+	###############################################################
+	# ONLY SERVER HANDLES PICKUP
+	###############################################################
+
+	if !multiplayer.is_server():
+		return
+
+	###############################################################
+	# SAFETY
+	###############################################################
+
 	if pickup_blocked:
 		return
 
-	# Already used
 	if used:
 		return
 
-	# Only detect player hurtboxes
 	if area.name != "Hurtbox":
 		return
 
+	###############################################################
+	# GET PLAYER FROM HURTBOX
+	###############################################################
+
 	var player = area.get_parent()
 
-	# Safety check
-	if !player.has_method("add_egg"):
+	if player == null:
 		return
 
-	# Try adding egg to inventory
-	var success = player.add_egg(egg_data)
+	###############################################################
+	# FIND REAL AUTHORITATIVE PLAYER
+	###############################################################
 
-	if success:
+	var peer_id = (
+		player.get_multiplayer_authority()
+	)
 
-		print(
-			player.username,
-			" picked up ",
-			egg_data.egg_name
+	var level = (
+		get_tree()
+		.get_first_node_in_group("level")
+	)
+
+	if level == null:
+		return
+
+	var real_player = (
+		level.players.get_node_or_null(
+			str(peer_id)
 		)
+	)
 
-		queue_free()
+	if real_player == null:
+		return
 
+	###############################################################
+	# VALIDATE INVENTORY
+	###############################################################
+
+	if !real_player.has_method("add_egg"):
+		return
+
+	###############################################################
+	# TRY ADDING EGG
+	###############################################################
+
+	var success = (
+		real_player.add_egg(egg_data)
+	)
+
+	if !success:
+		return
+
+	###############################################################
+	# MARK USED
+	###############################################################
+
+	used = true
+
+	###############################################################
+	# DEBUG
+	###############################################################
+
+	print(
+		real_player.username,
+		" picked up ",
+		egg_data.egg_name
+	)
+
+	###############################################################
+	# SPAWNER SYNCS DELETION
+	###############################################################
+
+	queue_free()
 
 ###############################################################
 # LAND / BREAK
@@ -137,6 +202,13 @@ func _on_body_entered(
 	_body_shape,
 	_local_shape
 ):
+
+	###############################################################
+	# ONLY SERVER DECIDES COLLISIONS
+	###############################################################
+
+	if !multiplayer.is_server():
+		return
 
 	# Prevent double processing
 	if landed or broke:
@@ -179,7 +251,10 @@ func land_egg():
 		" landed safely"
 	)
 
-	# Freeze physics
+	###############################################################
+	# FREEZE PHYSICS
+	###############################################################
+
 	freeze = true
 
 	sleeping = true
@@ -240,4 +315,13 @@ func break_egg():
 
 		effect.activate(self)
 
+	###############################################################
+	# SPAWNER SYNCS DELETION
+	###############################################################
+
 	queue_free()
+
+
+func unblock_pickup():
+
+	pickup_blocked = false

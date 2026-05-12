@@ -3,8 +3,6 @@
 [ext_resource type="Script" uid="uid://bo2intcjqimh4" path="res://scripts/multiplayer.gd" id="1_4vwpp"]
 [ext_resource type="TileSet" uid="uid://u74tl5t3n31x" path="res://assets/new_tile_set.tres" id="1_crvko"]
 [ext_resource type="PackedScene" uid="uid://7pvubu1jwnag" path="res://scenes/multiplayer_hud.tscn" id="3_pjkx2"]
-[ext_resource type="PackedScene" uid="uid://b5lay31e7mdr" path="res://scenes/eggs/egg_object.tscn" id="4_36d77"]
-[ext_resource type="Resource" uid="uid://cafdrqyq4v7rm" path="res://scenes/eggs/resources/heal_egg.tres" id="5_uvo4r"]
 
 [node name="Multiplayer" type="Node2D" unique_id=561955193]
 script = ExtResource("1_4vwpp")
@@ -32,23 +30,48 @@ spawn_limit = 4
 [node name="UI" type="CanvasLayer" parent="." unique_id=1511868854]
 
 [node name="MultiplayerHUD" parent="UI" unique_id=985089033 instance=ExtResource("3_pjkx2")]
+metadata/_edit_use_anchors_ = true
 
-[node name="EggObject" parent="." unique_id=9722509 instance=ExtResource("4_36d77")]
-position = Vector2(373, 604)
-egg_data = ExtResource("5_uvo4r")
+[node name="Eggs" type="Node2D" parent="." unique_id=1092400229 groups=["eggs"]]
 
-[node name="EggObject2" parent="." unique_id=2131681836 instance=ExtResource("4_36d77")]
-position = Vector2(493, 607)
-egg_data = ExtResource("5_uvo4r")
+[node name="EggSpawner" type="MultiplayerSpawner" parent="." unique_id=1061256318]
+_spawnable_scenes = PackedStringArray("uid://b5lay31e7mdr")
+spawn_path = NodePath("../Eggs")
 
-[node name="EggObject3" parent="." unique_id=1624661436 instance=ExtResource("4_36d77")]
-position = Vector2(654, 609)
-egg_data = ExtResource("5_uvo4r")
+[node name="EggSpawns" type="Node2D" parent="." unique_id=295168464]
 
-[node name="EggObject4" parent="." unique_id=1893474422 instance=ExtResource("4_36d77")]
-position = Vector2(747, 606)
-egg_data = ExtResource("5_uvo4r")
+[node name="Marker2D" type="Marker2D" parent="EggSpawns" unique_id=527670316]
+position = Vector2(309, 612)
 
-[node name="EggObject5" parent="." unique_id=1969388594 instance=ExtResource("4_36d77")]
-position = Vector2(834, 606)
-egg_data = ExtResource("5_uvo4r")
+[node name="Marker2D2" type="Marker2D" parent="EggSpawns" unique_id=250306345]
+position = Vector2(363, 612)
+
+[node name="Marker2D3" type="Marker2D" parent="EggSpawns" unique_id=839063188]
+position = Vector2(429, 611)
+
+[node name="Marker2D4" type="Marker2D" parent="EggSpawns" unique_id=1908384695]
+position = Vector2(492, 611)
+
+[node name="Marker2D5" type="Marker2D" parent="EggSpawns" unique_id=2096202199]
+position = Vector2(543, 611)
+
+[node name="Marker2D6" type="Marker2D" parent="EggSpawns" unique_id=997257961]
+position = Vector2(606, 612)
+
+[node name="Marker2D7" type="Marker2D" parent="EggSpawns" unique_id=319133171]
+position = Vector2(656, 612)
+
+[node name="Marker2D8" type="Marker2D" parent="EggSpawns" unique_id=676587432]
+position = Vector2(701, 613)
+
+[node name="Marker2D9" type="Marker2D" parent="EggSpawns" unique_id=1875747945]
+position = Vector2(757, 616)
+
+[node name="Marker2D10" type="Marker2D" parent="EggSpawns" unique_id=1833126472]
+position = Vector2(813, 616)
+
+[node name="Marker2D11" type="Marker2D" parent="EggSpawns" unique_id=1929992073]
+position = Vector2(853, 609)
+
+[node name="Marker2D12" type="Marker2D" parent="EggSpawns" unique_id=1173082245]
+position = Vector2(853, 609)
