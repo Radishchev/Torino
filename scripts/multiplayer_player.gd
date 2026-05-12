@@ -36,10 +36,9 @@ var air_time := 0.0
 
 @onready var camera = $Camera2D
 @onready var username_label = $UsernameLabel
-@onready var health_bar = $HealthBar
 @onready var attack_area = $AttackArea
 @onready var anim = $AnimatedSprite2D
-
+@onready var world_hearts = $WorldHearts
 
 ####################################################
 # INVENTORY
@@ -78,12 +77,73 @@ var is_dead := false
 
 		health = clamp(value, 0, max_health)
 
-		if health_bar:
-			health_bar.value = health
+		####################################################
+		# LOCAL HUD HEARTS
+		####################################################
+
+		if is_multiplayer_authority():
+
+			var hud = (
+				get_tree()
+				.get_first_node_in_group("hud")
+			)
+
+			if hud:
+
+				hud.update_hearts(
+					health,
+					max_health
+				)
+
+		####################################################
+		# WORLD HEARTS
+		####################################################
+
+		update_world_hearts()
+
+		####################################################
+		# DEATH
+		####################################################
 
 		if health <= 0 and !is_dead:
+
 			die()
 
+func update_world_hearts():
+
+	if world_hearts == null:
+		return
+	
+	# Remove old hearts
+	for child in world_hearts.get_children():
+
+		child.queue_free()
+
+	# Create hearts
+	for i in range(max_health):
+
+		var heart = TextureRect.new()
+
+		heart.texture = preload(
+			"res://assets/heart.png"
+		)
+
+		heart.custom_minimum_size = Vector2(12, 12)
+
+		heart.expand_mode = (
+			TextureRect.EXPAND_IGNORE_SIZE
+		)
+
+		heart.stretch_mode = (
+			TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		)
+
+		# Empty hearts become transparent
+		if i >= health:
+
+			continue
+
+		world_hearts.add_child(heart)
 
 ####################################################
 # READY
@@ -101,18 +161,32 @@ func _ready():
 	if is_multiplayer_authority():
 
 		camera.make_current()
+		
+		world_hearts.visible = false
 
 		var hud = get_tree().get_first_node_in_group("hud")
 
 		if hud:
 			hud.set_player(self)
+			hud.update_hearts(
+				health,
+				max_health
+			)
 
 	# Username display
 	username_label.text = username
 
 	# Health setup
-	health_bar.max_value = max_health
-	health_bar.value = health
+	update_world_hearts()
+	#health_bar.max_value = max_health
+	var hud = get_tree().get_first_node_in_group("hud")
+
+	if hud and is_multiplayer_authority():
+
+		hud.update_hearts(
+			health,
+			max_health
+		)
 
 	# Initial animation
 	if is_on_floor():
@@ -303,6 +377,11 @@ func add_egg(egg : EggData):
 		return false
 
 	egg_stack.push_back(egg)
+	var hud = get_tree().get_first_node_in_group("hud")
+
+	if hud and is_multiplayer_authority():
+
+		hud.update_eggs(egg_stack)
 
 	print(
 		username,
@@ -320,29 +399,36 @@ func add_egg(egg : EggData):
 func throw_egg():
 
 	if egg_stack.is_empty():
+
 		print("No eggs")
 		return
 
-	# Remove top egg
+	####################################################
+	# REMOVE EGG FROM INVENTORY
+	####################################################
+
 	var egg_data = egg_stack.pop_back()
 
-	# Create physical egg
-	var egg = egg_object_scene.instantiate()
+	# Update HUD
+	var hud = (
+		get_tree()
+		.get_first_node_in_group("hud")
+	)
 
-	# Transfer EggData
-	egg.egg_data = egg_data
+	if hud and is_multiplayer_authority():
 
-	# Spawn into world
-	get_tree().current_scene.add_child(egg)
+		hud.update_eggs(egg_stack)
 
 	####################################################
 	# MOVEMENT DATA
 	####################################################
 
 	var current_velocity = velocity
-	var speed_amount = current_velocity.length()
 
-	# Normalize speed
+	var speed_amount = (
+		current_velocity.length()
+	)
+
 	var speed_ratio = clamp(
 		speed_amount / 300.0,
 		0.0,
@@ -355,48 +441,61 @@ func throw_egg():
 
 	var throw_vector := Vector2.ZERO
 
-	# ONLY use movement direction if actually moving
+	# Use movement direction
 	if speed_amount > 5.0:
 
-		throw_vector = current_velocity.normalized()
+		throw_vector = (
+			current_velocity.normalized()
+		)
 
+	# Standing still fallback
 	else:
 
-		# Standing still fallback
 		if facing_right:
+
 			throw_vector = Vector2.RIGHT
+
 		else:
+
 			throw_vector = Vector2.LEFT
 
 	####################################################
-	# SPAWN POSITION
+	# THROW VELOCITY
 	####################################################
 
-	egg.global_position = global_position + (
-		throw_vector * 20.0
-	)
-
-	####################################################
-	# SMALL MOMENTUM BOOST
-	####################################################
-
-	# IMPORTANT:
-	# Tiny additional release force.
-	# Player momentum should dominate.
-	#
 	var directional_boost = (
 		throw_vector
 		* 120.0
 		* speed_ratio
 	)
 
+	var final_velocity = (
+		current_velocity
+		+ directional_boost
+	)
+
 	####################################################
-	# FINAL VELOCITY
+	# THROW POSITION
 	####################################################
 
-	egg.linear_velocity = (
-		current_velocity + directional_boost
+	var spawn_position = (
+		global_position
+		+ (throw_vector * 20.0)
 	)
+
+	####################################################
+	# CREATE EGG
+	####################################################
+
+	var egg = egg_object_scene.instantiate()
+
+	egg.egg_data = egg_data
+
+	get_tree().current_scene.add_child(egg)
+
+	egg.global_position = spawn_position
+
+	egg.linear_velocity = final_velocity
 
 	####################################################
 	# PREVENT INSTANT RE-PICKUP
@@ -404,10 +503,14 @@ func throw_egg():
 
 	egg.pickup_blocked = true
 
-	var timer = get_tree().create_timer(0.35)
+	var timer = (
+		get_tree().create_timer(0.35)
+	)
 
 	timer.timeout.connect(func():
+
 		if is_instance_valid(egg):
+
 			egg.pickup_blocked = false
 	)
 
@@ -416,7 +519,6 @@ func throw_egg():
 		" threw ",
 		egg_data.egg_name
 	)
-	
 ####################################################
 # UTIL
 ####################################################

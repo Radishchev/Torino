@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://7pvubu1jwnag"]
 
 [ext_resource type="Script" uid="uid://cis5yk2uvu6ot" path="res://scripts/multiplayer_hud.gd" id="1_3424s"]
+[ext_resource type="Texture2D" uid="uid://c0sktf38g8ilt" path="res://assets/heart.png" id="2_v25y6"]
 
 [node name="MultiplayerHUD" type="Control" unique_id=985089033 groups=["hud"]]
 layout_mode = 3
@@ -10,18 +11,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3424s")
-
-[node name="EggLabel" type="Label" parent="." unique_id=234417458]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="HealthLabel" type="Label" parent="." unique_id=464481974]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+heart_texture = ExtResource("2_v25y6")
 
 [node name="DebugLabel" type="Label" parent="." unique_id=71378409]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="HeartsContainer" type="HBoxContainer" parent="." unique_id=256409680]
+layout_mode = 0
+offset_right = 171.0
+offset_bottom = 106.0
+
+[node name="EggContainer" type="HBoxContainer" parent="." unique_id=212414156]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

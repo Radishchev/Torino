@@ -8,19 +8,25 @@ const PLAYER_SCENE = preload(
 @onready var spawn_points = $SpawnPoints
 
 
+####################################################
+# READY
+####################################################
+
 func _ready():
 
-	# IMPORTANT
-	# Needed so NetworkManager can find this level
 	add_to_group("level")
 
-	# Host spawns itself immediately
+	# Host spawns immediately
 	if multiplayer.is_server():
 
 		spawn_player(
 			multiplayer.get_unique_id()
 		)
 
+
+####################################################
+# PLAYER SPAWNING
+####################################################
 
 func spawn_player(peer_id):
 
@@ -30,20 +36,33 @@ func spawn_player(peer_id):
 
 	var player = PLAYER_SCENE.instantiate()
 
+	####################################################
+	# PLAYER SETUP
+	####################################################
+
 	# Peer ID becomes node name
 	player.name = str(peer_id)
 
-	# Correct username from server dictionary
-	player.username = NetworkManager.player_usernames.get(
-		peer_id,
-		"Player"
+	# Username from NetworkManager
+	player.username = (
+		NetworkManager
+		.player_usernames
+		.get(peer_id, "Player")
 	)
 
-	# Add FIRST
+	####################################################
+	# ADD PLAYER
+	####################################################
+
 	players.add_child(player, true)
 
-	# Spawn position
-	var spawn_index = players.get_child_count() - 1
+	####################################################
+	# SPAWN POSITION
+	####################################################
+
+	var spawn_index = (
+		players.get_child_count() - 1
+	)
 
 	spawn_index = clamp(
 		spawn_index,
@@ -51,9 +70,15 @@ func spawn_player(peer_id):
 		spawn_points.get_child_count() - 1
 	)
 
-	player.global_position = spawn_points.get_child(
-		spawn_index
-	).global_position
+	player.global_position = (
+		spawn_points
+		.get_child(spawn_index)
+		.global_position
+	)
+
+	####################################################
+	# DEBUG
+	####################################################
 
 	print(
 		"Spawned player:",
