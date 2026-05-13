@@ -151,7 +151,8 @@ func spawn_starting_eggs():
 func spawn_egg(
 	egg_data : EggData,
 	position : Vector2,
-	start_velocity := Vector2.ZERO
+	start_velocity := Vector2.ZERO,
+	owner_peer_id := 1
 ):
 
 	####################################################
@@ -178,18 +179,23 @@ func spawn_egg(
 		"name": egg_name,
 		"egg_resource_path": egg_data.resource_path,
 		"position": position,
-		"velocity": start_velocity
+		"velocity": start_velocity,
+		"owner_peer_id": owner_peer_id
 	})
-
 
 ####################################################
 # CALLED AUTOMATICALLY ON ALL PEERS
 ####################################################
-
 func spawn_network_egg(data):
 
+	####################################################
+	# DEBUG
+	####################################################
+
+	print("Spawn data:", data)
+
 	var egg = EGG_SCENE.instantiate()
-	
+
 	egg.pickup_blocked = true
 
 	####################################################
@@ -210,13 +216,36 @@ func spawn_network_egg(data):
 	egg.egg_data = egg_data
 
 	####################################################
+	# IMPORTANT
+	# STORE THROWER
+	####################################################
+
+	print(
+		"DATA owner:",
+		data["owner_peer_id"]
+	)
+
+	egg.owner_peer_id = int(
+		data["owner_peer_id"]
+	)
+
+	print(
+		"EGG owner AFTER assignment:",
+		egg.owner_peer_id
+	)
+
+	####################################################
 	# TRANSFORM
 	####################################################
 
 	egg.global_position = data["position"]
 
 	egg.linear_velocity = data["velocity"]
-	
+
+	####################################################
+	# PICKUP DELAY
+	####################################################
+
 	var timer = get_tree().create_timer(0.35)
 
 	timer.timeout.connect(

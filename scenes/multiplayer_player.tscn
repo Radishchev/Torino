@@ -130,7 +130,13 @@ position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_jlq18")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=843217204]
-zoom = Vector2(2, 2)
+limit_left = 0
+limit_top = 0
+limit_right = 1168
+limit_bottom = 656
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=2007606627]
 replication_config = SubResource("SceneReplicationConfig_xk3hh")

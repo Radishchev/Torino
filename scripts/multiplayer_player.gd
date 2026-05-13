@@ -364,6 +364,10 @@ func take_damage(amount):
 
 	health -= amount
 
+@rpc("any_peer")
+func heal(amount):
+
+	health += amount
 
 ####################################################
 # INVENTORY
@@ -535,7 +539,10 @@ func throw_egg():
 		if hud:
 
 			hud.update_eggs(egg_stack)
-
+	print(
+		"Throwing egg as peer:",
+		multiplayer.get_unique_id()
+	)
 	####################################################
 	# MOVEMENT DATA
 	####################################################
@@ -607,7 +614,8 @@ func throw_egg():
 		request_throw_egg(
 			egg_data.resource_path,
 			spawn_position,
-			final_velocity
+			final_velocity,
+			multiplayer.get_unique_id()
 		)
 
 	####################################################
@@ -620,7 +628,8 @@ func throw_egg():
 			1,
 			egg_data.resource_path,
 			spawn_position,
-			final_velocity
+			final_velocity,
+			multiplayer.get_unique_id()
 		)
 
 	####################################################
@@ -642,13 +651,17 @@ func throw_egg():
 func request_throw_egg(
 	egg_resource_path : String,
 	spawn_position : Vector2,
-	start_velocity : Vector2
+	start_velocity : Vector2,
+	owner_peer_id : int
 ):
 
 	####################################################
 	# ONLY SERVER SPAWNS
 	####################################################
-
+	print(
+		"Server received throw request from:",
+		owner_peer_id
+	)
 	if !multiplayer.is_server():
 		return
 
@@ -676,9 +689,9 @@ func request_throw_egg(
 	level.spawn_egg(
 		egg_data,
 		spawn_position,
-		start_velocity
+		start_velocity,
+		owner_peer_id
 	)
-	
 
 ####################################################
 # UTIL
