@@ -27,3 +27,38 @@ offset_bottom = 106.0
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="." unique_id=1560277198]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -34.5
+offset_top = 144.5
+offset_right = 34.5
+offset_bottom = 167.5
+grow_horizontal = 2
+text = "You Died"
+
+[node name="LeaderboardPanel" type="Panel" parent="." unique_id=226040128]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.5
+offset_top = -152.5
+offset_right = 140.5
+offset_bottom = 152.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="LeaderboardPanel" unique_id=1942270164]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LeaderboardEntries" type="VBoxContainer" parent="LeaderboardPanel/MarginContainer" unique_id=1422552828]
+layout_mode = 2

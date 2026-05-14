@@ -70,8 +70,28 @@ const MAX_EGGS := 3
 ####################################################
 
 var is_dead := false
+
 var last_attacker_peer_id := -1
 var is_invincible := false
+
+@export var blink_visible := true:
+	set(value):
+
+		blink_visible = value
+
+		if anim:
+
+			anim.visible = value
+
+		if username_label:
+
+			username_label.visible = value
+
+		if world_hearts:
+
+			if !is_multiplayer_authority():
+
+				world_hearts.visible = value
 
 @export var respawn_time := 5.0
 
@@ -111,8 +131,8 @@ var is_invincible := false
 		####################################################
 
 		if health <= 0 and !is_dead:
-
-			die()
+			if is_multiplayer_authority():
+				die()
 
 func update_world_hearts():
 
@@ -178,7 +198,6 @@ func _ready():
 				health,
 				max_health
 			)
-
 	# Username display
 	username_label.text = username
 
@@ -345,6 +364,37 @@ func die():
 		return
 
 	is_dead = true
+	
+	####################################################
+	# SHOW LEADERBOARD
+	####################################################
+
+	if is_multiplayer_authority():
+
+		var hud = (
+			get_tree()
+			.get_first_node_in_group("hud")
+		)
+
+		if hud:
+
+			hud.show_leaderboard()
+	####################################################
+	# SYNCHRONIZED VISIBILITY
+	####################################################
+
+	blink_visible = false
+
+	####################################################
+	# AWARD KILL
+	####################################################
+
+	if last_attacker_peer_id != -1:
+
+		NetworkManager.request_add_kill.rpc_id(
+			1,
+			last_attacker_peer_id
+		)
 
 	print(
 		username,
@@ -359,10 +409,8 @@ func die():
 	collision.disabled = true
 
 	####################################################
-	# HIDE VISUALS
+	# HIDE LOCAL HEARTS
 	####################################################
-
-	anim.visible = false
 
 	world_hearts.visible = false
 
@@ -371,7 +419,25 @@ func die():
 	####################################################
 
 	respawn()
-
+#@rpc("call_local")
+#func sync_death_visuals(dead : bool):
+#
+	#####################################################
+	## PLAYER VISUALS
+	#####################################################
+#
+	#anim.visible = !dead
+#
+	#username_label.visible = !dead
+#
+	#####################################################
+	## WORLD HEARTS
+	#####################################################
+#
+	#if !is_multiplayer_authority():
+#
+		#world_hearts.visible = !dead
+		#
 func respawn():
 
 	await get_tree().create_timer(
@@ -412,16 +478,27 @@ func respawn():
 	health = max_health
 
 	is_dead = false
+	
+	####################################################
+	# HIDE LEADERBOARD
+	####################################################
+
+	if is_multiplayer_authority():
+
+		var hud = (
+			get_tree()
+			.get_first_node_in_group("hud")
+		)
+
+		if hud:
+
+			hud.hide_leaderboard()
 
 	####################################################
-	# RESTORE VISUALS
+	# RESTORE VISUALS FOR EVERYONE
 	####################################################
 
-	anim.visible = true
-
-	if !is_multiplayer_authority():
-
-		world_hearts.visible = true
+	#sync_death_visuals.rpc(false)
 
 	####################################################
 	# RESTORE COLLISIONS
@@ -433,13 +510,10 @@ func respawn():
 	# TEMP INVINCIBILITY
 	####################################################
 
-	####################################################
-	# TEMP INVINCIBILITY
-	####################################################
-
 	is_invincible = true
 
 	var invincible_time := 3.0
+
 	var elapsed := 0.0
 
 	while elapsed < invincible_time:
@@ -463,7 +537,7 @@ func respawn():
 		# TOGGLE VISIBILITY
 		####################################################
 
-		anim.visible = !anim.visible
+		blink_visible = !blink_visible
 
 		await get_tree().create_timer(
 			blink_interval
@@ -472,16 +546,24 @@ func respawn():
 		elapsed += blink_interval
 
 	####################################################
-	# RESTORE NORMAL STATE
+	# FINAL VISIBLE STATE
 	####################################################
 
 	anim.visible = true
 
+	username_label.visible = true
+
+	if !is_multiplayer_authority():
+
+		world_hearts.visible = true
+
+	####################################################
+	# END INVINCIBILITY
+	####################################################
+
 	is_invincible = false
 
 	print(username, " respawned")
-
-
 func attack():
 	
 	if is_dead:
