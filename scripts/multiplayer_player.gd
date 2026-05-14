@@ -39,6 +39,7 @@ var air_time := 0.0
 @onready var attack_area = $AttackArea
 @onready var anim = $AnimatedSprite2D
 @onready var world_hearts = $WorldHearts
+@onready var collision = $CollisionShape2D
 
 ####################################################
 # INVENTORY
@@ -69,6 +70,10 @@ const MAX_EGGS := 3
 ####################################################
 
 var is_dead := false
+var last_attacker_peer_id := -1
+var is_invincible := false
+
+@export var respawn_time := 5.0
 
 @export var max_health := 5
 
@@ -220,7 +225,12 @@ func _physics_process(delta):
 	####################################################
 
 	if is_multiplayer_authority():
+		####################################################
+		# DEAD PLAYERS CANNOT CONTROL
+		####################################################
 
+		if is_dead:
+			return
 		# Gravity
 		velocity.y += gravity * delta
 
@@ -331,12 +341,151 @@ func _physics_process(delta):
 
 func die():
 
+	if is_dead:
+		return
+
 	is_dead = true
 
-	print(username, " died")
+	print(
+		username,
+		" died to peer:",
+		last_attacker_peer_id
+	)
+
+	####################################################
+	# DISABLE COLLISIONS
+	####################################################
+
+	collision.disabled = true
+
+	####################################################
+	# HIDE VISUALS
+	####################################################
+
+	anim.visible = false
+
+	world_hearts.visible = false
+
+	####################################################
+	# RESPAWN TIMER
+	####################################################
+
+	respawn()
+
+func respawn():
+
+	await get_tree().create_timer(
+		respawn_time
+	).timeout
+
+	####################################################
+	# FIND LEVEL
+	####################################################
+
+	var level = (
+		get_tree()
+		.get_first_node_in_group("level")
+	)
+
+	if level == null:
+		return
+
+	####################################################
+	# RANDOM SPAWN
+	####################################################
+
+	var spawn_points = (
+		level.spawn_points.get_children()
+	)
+
+	if spawn_points.is_empty():
+		return
+
+	var spawn = spawn_points.pick_random()
+
+	global_position = spawn.global_position
+
+	####################################################
+	# RESET HEALTH
+	####################################################
+
+	health = max_health
+
+	is_dead = false
+
+	####################################################
+	# RESTORE VISUALS
+	####################################################
+
+	anim.visible = true
+
+	if !is_multiplayer_authority():
+
+		world_hearts.visible = true
+
+	####################################################
+	# RESTORE COLLISIONS
+	####################################################
+
+	collision.disabled = false
+
+	####################################################
+	# TEMP INVINCIBILITY
+	####################################################
+
+	####################################################
+	# TEMP INVINCIBILITY
+	####################################################
+
+	is_invincible = true
+
+	var invincible_time := 3.0
+	var elapsed := 0.0
+
+	while elapsed < invincible_time:
+
+		####################################################
+		# BLINK SPEED INCREASES OVER TIME
+		####################################################
+
+		var progress = (
+			elapsed / invincible_time
+		)
+
+		# Starts slow → becomes fast
+		var blink_interval = lerp(
+			0.25,
+			0.05,
+			progress
+		)
+
+		####################################################
+		# TOGGLE VISIBILITY
+		####################################################
+
+		anim.visible = !anim.visible
+
+		await get_tree().create_timer(
+			blink_interval
+		).timeout
+
+		elapsed += blink_interval
+
+	####################################################
+	# RESTORE NORMAL STATE
+	####################################################
+
+	anim.visible = true
+
+	is_invincible = false
+
+	print(username, " respawned")
 
 
 func attack():
+	
+	if is_dead:
+		return
 
 	for area in attack_area.get_overlapping_areas():
 
@@ -349,7 +498,8 @@ func attack():
 
 			enemy.take_damage.rpc_id(
 				enemy.get_multiplayer_authority(),
-				1
+				1,
+				multiplayer.get_unique_id()
 			)
 
 			print(
@@ -360,7 +510,30 @@ func attack():
 
 
 @rpc("any_peer")
-func take_damage(amount):
+func take_damage(
+	amount,
+	attacker_peer_id
+):
+	if is_dead:
+		return
+
+	if is_invincible:
+		return
+	####################################################
+	# STORE ATTACKER
+	####################################################
+
+	last_attacker_peer_id = attacker_peer_id
+
+	print(
+		username,
+		" damaged by peer:",
+		last_attacker_peer_id
+	)
+
+	####################################################
+	# APPLY DAMAGE
+	####################################################
 
 	health -= amount
 
@@ -499,7 +672,10 @@ func request_remove_egg():
 ####################################################
 
 func throw_egg():
-
+	
+	if is_dead:
+		return
+		
 	if egg_stack.is_empty():
 
 		print("No eggs")
