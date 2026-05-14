@@ -32,6 +32,14 @@ func _ready():
 	$LeaderboardPanel.visible = false
 	
 	update_leaderboard()
+	
+	if OS.has_feature("mobile"):
+
+		$MobileControls.visible = true
+
+	else:
+
+		$MobileControls.visible = false
 
 ####################################################
 # PLAYER SETUP

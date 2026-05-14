@@ -2,6 +2,39 @@
 
 [ext_resource type="Script" uid="uid://cis5yk2uvu6ot" path="res://scripts/multiplayer_hud.gd" id="1_3424s"]
 [ext_resource type="Texture2D" uid="uid://c0sktf38g8ilt" path="res://assets/heart.png" id="2_v25y6"]
+[ext_resource type="Texture2D" uid="uid://d4f18y2o7s661" path="res://assets/Gray_Buttons_Pixel.png" id="3_ybnum"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_07v4m"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(81, 1, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ebn3"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(241, 1, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eklao"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(97, 1, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fohl6"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(257, 1, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0014g"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(97, 17, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6vv8v"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(257, 17, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7pitv"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(81, 17, 14.568382, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vksas"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(241, 17, 14, 14)
 
 [node name="MultiplayerHUD" type="Control" unique_id=985089033 groups=["hud"]]
 layout_mode = 3
@@ -62,3 +95,36 @@ offset_bottom = 40.0
 
 [node name="LeaderboardEntries" type="VBoxContainer" parent="LeaderboardPanel/MarginContainer" unique_id=1422552828]
 layout_mode = 2
+
+[node name="MobileControls" type="Control" parent="." unique_id=458154225]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LeftButton" type="TouchScreenButton" parent="MobileControls" unique_id=1511220481]
+position = Vector2(77, 540)
+scale = Vector2(4, 4)
+texture_normal = SubResource("AtlasTexture_07v4m")
+texture_pressed = SubResource("AtlasTexture_4ebn3")
+action = "move_left"
+
+[node name="RightButton" type="TouchScreenButton" parent="MobileControls" unique_id=728198220]
+position = Vector2(226, 540)
+scale = Vector2(4, 4)
+texture_normal = SubResource("AtlasTexture_eklao")
+texture_pressed = SubResource("AtlasTexture_fohl6")
+action = "move_right"
+
+[node name="FlapButton" type="TouchScreenButton" parent="MobileControls" unique_id=1926303677]
+position = Vector2(1000, 457)
+scale = Vector2(4, 4)
+texture_normal = SubResource("AtlasTexture_0014g")
+texture_pressed = SubResource("AtlasTexture_6vv8v")
+action = "flap"
+
+[node name="EggButton" type="TouchScreenButton" parent="MobileControls" unique_id=2040163356]
+position = Vector2(1000, 541)
+scale = Vector2(4, 4)
+texture_normal = SubResource("AtlasTexture_7pitv")
+texture_pressed = SubResource("AtlasTexture_vksas")
+action = "drop_egg"

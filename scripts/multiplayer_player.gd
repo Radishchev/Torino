@@ -12,6 +12,11 @@ extends CharacterBody2D
 @export var max_speed := 180.0
 @export var drift_friction := 0.03
 
+var spectating := false
+
+var default_camera_zoom := Vector2.ONE
+
+var spectate_zoom := Vector2(3.4, 3.4)
 
 ####################################################
 # ANIMATION
@@ -186,6 +191,8 @@ func _ready():
 	if is_multiplayer_authority():
 	
 		camera.make_current()
+		
+		default_camera_zoom = camera.zoom
 		
 		world_hearts.visible = false
 		
@@ -370,7 +377,7 @@ func die():
 	####################################################
 
 	if is_multiplayer_authority():
-
+	
 		var hud = (
 			get_tree()
 			.get_first_node_in_group("hud")
@@ -379,6 +386,8 @@ func die():
 		if hud:
 
 			hud.show_leaderboard()
+			
+		spectate_killer()
 	####################################################
 	# SYNCHRONIZED VISIBILITY
 	####################################################
@@ -470,6 +479,8 @@ func respawn():
 	var spawn = spawn_points.pick_random()
 
 	global_position = spawn.global_position
+	
+	camera.global_position = global_position
 
 	####################################################
 	# RESET HEALTH
@@ -478,6 +489,14 @@ func respawn():
 	health = max_health
 
 	is_dead = false
+	
+	####################################################
+	# STOP SPECTATING
+	####################################################
+
+	spectating = false
+
+	camera.zoom = default_camera_zoom
 	
 	####################################################
 	# HIDE LEADERBOARD
@@ -538,6 +557,8 @@ func respawn():
 		####################################################
 
 		blink_visible = !blink_visible
+		
+		notify_property_list_changed()
 
 		await get_tree().create_timer(
 			blink_interval
@@ -562,8 +583,11 @@ func respawn():
 	####################################################
 
 	is_invincible = false
+	
+	blink_visible = true
 
 	print(username, " respawned")
+
 func attack():
 	
 	if is_dead:
@@ -968,3 +992,50 @@ func remap(
 		out_max,
 		(value - in_min) / (in_max - in_min)
 	)
+
+
+func spectate_killer():
+
+	if last_attacker_peer_id == -1:
+		return
+
+	####################################################
+	# FIND KILLER
+	####################################################
+
+	var level = (
+		get_tree()
+		.get_first_node_in_group("level")
+	)
+
+	if level == null:
+		return
+
+	var killer = level.players.get_node_or_null(
+		str(last_attacker_peer_id)
+	)
+
+	if killer == null:
+		return
+
+	spectating = true
+
+	####################################################
+	# CAMERA ZOOM
+	####################################################
+
+	camera.zoom = spectate_zoom
+
+	####################################################
+	# FOLLOW LOOP
+	####################################################
+
+	while spectating and is_dead:
+
+		camera.global_position = lerp(
+			camera.global_position,
+			killer.global_position,
+			0.08
+		)
+
+		await get_tree().process_frame
