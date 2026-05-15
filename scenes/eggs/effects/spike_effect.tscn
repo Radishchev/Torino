@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://db7d210j22hq8"]
+
+[ext_resource type="Script" uid="uid://bckqx3jf054r8" path="res://scenes/eggs/effects/spike_effect.gd" id="1_i8a2y"]
+[ext_resource type="PackedScene" uid="uid://dar6l4pkrr4n7" path="res://scenes/spike.tscn" id="2_y552n"]
+
+[node name="SpikeEffect" type="Node" unique_id=710521470]
+script = ExtResource("1_i8a2y")
+spike_scene = ExtResource("2_y552n")

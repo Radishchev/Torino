@@ -33,7 +33,7 @@ func _on_body_entered(_rid, _body, _body_shape, _local_shape):
 
 	was_finalized = true
 
-	var impact = abs(last_velocity.y)
+	var impact = last_velocity.length()
 	print("Egg impact:", impact)
 
 	if impact > break_velocity_threshold:

@@ -2,7 +2,7 @@ extends EggEffect
 
 @export var heal_amount := 2
 
-func activate(egg):
+func activate(egg, direction):
 
 	print("Healing effect activated")
 

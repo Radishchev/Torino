@@ -13,6 +13,10 @@ const EGG_SCENE = preload(
 	"res://scenes/eggs/egg_object.tscn"
 )
 
+const SPIKE_SCENE = preload(
+	"res://scenes/spike.tscn"
+)
+
 
 ####################################################
 # TEST EGG DATA
@@ -21,6 +25,11 @@ const EGG_SCENE = preload(
 const HEAL_EGG = preload(
 	"res://scenes/eggs/resources/heal_egg.tres"
 )
+
+const SPIKE_EGG = preload(
+	"res://scenes/eggs/resources/spike_egg.tres"
+)
+
 
 
 ####################################################
@@ -34,6 +43,7 @@ const HEAL_EGG = preload(
 @onready var egg_spawns = $EggSpawns
 @onready var egg_spawner = $EggSpawner
 
+@onready var spike_spawner = $SpikeSpawner
 
 ####################################################
 # READY
@@ -49,6 +59,8 @@ func _ready():
 	####################################################
 
 	egg_spawner.spawn_function = spawn_network_egg
+	
+	spike_spawner.spawn_function = spawn_network_spike
 
 	####################################################
 	# HOST STARTUP
@@ -139,7 +151,7 @@ func spawn_starting_eggs():
 	for spawn in egg_spawns.get_children():
 
 		spawn_egg(
-			HEAL_EGG,
+			SPIKE_EGG,
 			spawn.global_position
 		)
 
@@ -268,3 +280,80 @@ func spawn_network_egg(data):
 	####################################################
 
 	return egg
+
+
+func spawn_spike(
+	position : Vector2,
+	direction : Vector2,
+	owner_peer_id : int
+):
+
+	####################################################
+	# ONLY SERVER SPAWNS
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	####################################################
+	# UNIQUE NAME
+	####################################################
+
+	var spike_name = (
+		"Spike_"
+		+ str(Time.get_ticks_usec())
+	)
+
+	####################################################
+	# SPAWN THROUGH MULTIPLAYER SPAWNER
+	####################################################
+
+	spike_spawner.spawn({
+		"name": spike_name,
+		"position": position,
+		"direction": direction,
+		"owner_peer_id": owner_peer_id
+	})
+	
+func spawn_network_spike(data):
+
+	print("Spike spawn data:", data)
+
+	var spike = SPIKE_SCENE.instantiate()
+
+	####################################################
+	# DETERMINISTIC NAME
+	####################################################
+
+	spike.name = data["name"]
+
+	####################################################
+	# POSITION
+	####################################################
+
+	spike.global_position = data["position"]
+
+	####################################################
+	# ROTATION
+	####################################################
+
+	var direction = data["direction"]
+
+	spike.rotation = (
+		Vector2.UP.angle_to(direction)
+	)
+
+	####################################################
+	# OWNER
+	####################################################
+
+	spike.owner_peer_id = int(
+		data["owner_peer_id"]
+	)
+
+	print(
+		"Spawned network spike for peer:",
+		spike.owner_peer_id
+	)
+
+	return spike

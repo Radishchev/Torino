@@ -67,6 +67,37 @@ func request_add_kill(peer_id):
 		return
 
 	add_kill(peer_id)
+
+func remove_kill(peer_id):
+
+	if !multiplayer.is_server():
+		return
+
+	if !player_kills.has(peer_id):
+		player_kills[peer_id] = 0
+
+	player_kills[peer_id] = max(
+		player_kills[peer_id] - 1,
+		0
+	)
+
+	print(
+		"Kill removed from:",
+		peer_id,
+		" total:",
+		player_kills[peer_id]
+	)
+
+	broadcast_leaderboard()
+
+
+@rpc("any_peer", "call_local")
+func request_remove_kill(peer_id):
+
+	if !multiplayer.is_server():
+		return
+
+	remove_kill(peer_id)
 	
 func generate_random_username():
 

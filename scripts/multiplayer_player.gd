@@ -400,10 +400,30 @@ func die():
 
 	if last_attacker_peer_id != -1:
 
-		NetworkManager.request_add_kill.rpc_id(
-			1,
+		####################################################
+		# SELF KILL
+		####################################################
+
+		if (
 			last_attacker_peer_id
-		)
+			== multiplayer.get_unique_id()
+		):
+
+			NetworkManager.request_remove_kill.rpc_id(
+				1,
+				last_attacker_peer_id
+			)
+
+		####################################################
+		# NORMAL KILL
+		####################################################
+
+		else:
+
+			NetworkManager.request_add_kill.rpc_id(
+				1,
+				last_attacker_peer_id
+			)
 
 	print(
 		username,
@@ -447,6 +467,7 @@ func die():
 #
 		#world_hearts.visible = !dead
 		#
+
 func respawn():
 
 	await get_tree().create_timer(

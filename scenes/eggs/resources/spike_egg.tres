@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EggData" format=3 uid="uid://d4k27qsa3yfqg"]
+
+[ext_resource type="Script" uid="uid://bipw3saiu1rri" path="res://scenes/eggs/egg_data.gd" id="1_k3vpd"]
+[ext_resource type="PackedScene" uid="uid://db7d210j22hq8" path="res://scenes/eggs/effects/spike_effect.tscn" id="1_kow2y"]
+[ext_resource type="Texture2D" uid="uid://b4po2wvf5bgt5" path="res://assets/30 Easter Eggs By Albhedos Workshop/27.png" id="2_hipqf"]
+
+[resource]
+script = ExtResource("1_k3vpd")
+egg_name = "Spike Egg"
+icon = ExtResource("2_hipqf")
+effect_scene = ExtResource("1_kow2y")
+metadata/_custom_type_script = "uid://bipw3saiu1rri"

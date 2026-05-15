@@ -210,11 +210,26 @@ func _on_body_entered(
 	if !multiplayer.is_server():
 		return
 
-	# Prevent double processing
+	###############################################################
+	# PREVENT DOUBLE PROCESSING
+	###############################################################
+
 	if landed or broke:
 		return
 
-	var impact = abs(last_velocity.y)
+	###############################################################
+	# IMPACT STRENGTH
+	###############################################################
+
+	var impact = last_velocity.length()
+
+	###############################################################
+	# COLLISION DIRECTION
+	###############################################################
+
+	var hit_direction = (
+		last_velocity.normalized()
+	)
 
 	###############################################################
 	# BREAK
@@ -224,7 +239,10 @@ func _on_body_entered(
 
 		broke = true
 
-		call_deferred("break_egg")
+		call_deferred(
+			"break_egg",
+			hit_direction
+		)
 
 	###############################################################
 	# LAND
@@ -235,7 +253,6 @@ func _on_body_entered(
 		landed = true
 
 		call_deferred("land_egg")
-
 
 ###############################################################
 # LAND EGG
@@ -282,7 +299,7 @@ func land_egg():
 # BREAK EGG
 ###############################################################
 
-func break_egg():
+func break_egg(hit_direction):
 
 	if used:
 		return
@@ -313,14 +330,20 @@ func break_egg():
 
 		get_tree().current_scene.add_child(effect)
 
-		effect.activate(self)
+		###############################################################
+		# PASS SURFACE DIRECTION
+		###############################################################
+
+		effect.activate(
+			self,
+			-hit_direction
+		)
 
 	###############################################################
 	# SPAWNER SYNCS DELETION
 	###############################################################
 
 	queue_free()
-
 
 func unblock_pickup():
 
