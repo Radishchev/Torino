@@ -334,9 +334,23 @@ func break_egg(hit_direction):
 		# PASS SURFACE DIRECTION
 		###############################################################
 
+		###############################################################
+		# SNAP TO CARDINAL DIRECTION
+		###############################################################
+
+		var direction = -hit_direction
+
+		if abs(direction.x) > abs(direction.y):
+
+			direction = Vector2.RIGHT * sign(direction.x)
+
+		else:
+
+			direction = Vector2.DOWN * sign(direction.y)
+
 		effect.activate(
 			self,
-			-hit_direction
+			direction
 		)
 
 	###############################################################
