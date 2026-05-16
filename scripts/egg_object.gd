@@ -39,6 +39,7 @@ var pickup_blocked := false
 
 var last_velocity := Vector2.ZERO
 
+var collision_direction := Vector2.UP
 
 ###############################################################
 # NODES
@@ -91,6 +92,34 @@ func _physics_process(delta):
 
 	last_velocity = linear_velocity
 
+func _integrate_forces(state):
+
+	if state.get_contact_count() == 0:
+		return
+
+	###############################################################
+	# GET REAL COLLISION NORMAL
+	###############################################################
+
+	var normal = state.get_contact_local_normal(0)
+
+	###############################################################
+	# SNAP TO CARDINAL DIRECTION
+	###############################################################
+
+	if abs(normal.x) > abs(normal.y):
+
+		collision_direction = (
+			Vector2.RIGHT
+			* sign(normal.x)
+		)
+
+	else:
+
+		collision_direction = (
+			Vector2.DOWN
+			* sign(normal.y)
+		)
 
 ###############################################################
 # PICKUP
@@ -227,9 +256,7 @@ func _on_body_entered(
 	# COLLISION DIRECTION
 	###############################################################
 
-	var hit_direction = (
-		last_velocity.normalized()
-	)
+	var direction = -collision_direction
 
 	###############################################################
 	# BREAK
@@ -241,7 +268,7 @@ func _on_body_entered(
 
 		call_deferred(
 			"break_egg",
-			hit_direction
+			direction
 		)
 
 	###############################################################

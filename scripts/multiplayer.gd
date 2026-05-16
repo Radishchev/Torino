@@ -319,41 +319,74 @@ func spawn_network_spike(data):
 
 	print("Spike spawn data:", data)
 
-	var spike = SPIKE_SCENE.instantiate()
-
 	####################################################
-	# DETERMINISTIC NAME
+	# ROOT CONTAINER
 	####################################################
 
-	spike.name = data["name"]
+	var root = Node2D.new()
+
+	root.name = data["name"]
 
 	####################################################
-	# POSITION
-	####################################################
-
-	spike.global_position = data["position"]
-
-	####################################################
-	# ROTATION
+	# DATA
 	####################################################
 
 	var direction = data["direction"]
 
-	spike.rotation = (
-		Vector2.UP.angle_to(direction)
+	var perpendicular = Vector2(
+		-direction.y,
+		direction.x
 	)
 
 	####################################################
-	# OWNER
+	# CREATE 5 SPIKES
 	####################################################
 
-	spike.owner_peer_id = int(
-		data["owner_peer_id"]
-	)
+	for i in range(-2, 3):
 
-	print(
-		"Spawned network spike for peer:",
-		spike.owner_peer_id
-	)
+		var spike = SPIKE_SCENE.instantiate()
+		
+		spike.z_index = -1
+		
+		root.add_child(spike)
 
-	return spike
+		####################################################
+		# POSITION
+		####################################################
+
+		var offset = perpendicular * i * 14.0
+
+		spike.global_position = (
+			data["position"]
+			+ offset
+			- (direction * 6)
+		)
+
+		####################################################
+		# ROTATION
+		####################################################
+
+		spike.rotation = (
+			Vector2.UP.angle_to(direction)
+		)
+
+		####################################################
+		# SCALE
+		####################################################
+
+		spike.scale = Vector2(0.7, 0.7)
+
+		####################################################
+		# OWNER
+		####################################################
+
+		spike.owner_peer_id = int(
+			data["owner_peer_id"]
+		)
+
+		print(
+			"Spawned network spike for peer:",
+			spike.owner_peer_id
+		)
+
+	return root

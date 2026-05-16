@@ -890,10 +890,18 @@ func throw_egg():
 
 	var directional_boost = (
 		throw_vector
-		* 120.0
+		* 200.0
 		* speed_ratio
 	)
+	
+	####################################################
+	# REMOVE DOWNWARD MOMENTUM
+	####################################################
 
+	if current_velocity.y > 0:
+
+		current_velocity.y = 0
+	
 	var final_velocity = (
 		current_velocity
 		+ directional_boost

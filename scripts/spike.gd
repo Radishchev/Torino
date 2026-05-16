@@ -10,12 +10,19 @@ var owner_peer_id := -1
 # READY
 ####################################################
 
+var armed := false
+
+
 func _ready():
 
 	connect(
 		"body_entered",
 		_on_body_entered
 	)
+	
+	await get_tree().create_timer(0.15).timeout
+
+	armed = true
 
 ####################################################
 # DAMAGE
@@ -25,7 +32,9 @@ func _on_body_entered(body):
 
 	if !multiplayer.is_server():
 		return
-
+	if !armed:
+		return
+		
 	if body.has_method("take_damage"):
 
 		var authority = (
