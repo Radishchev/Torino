@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EggData" format=3 uid="uid://ceuffhlw76ld7"]
+
+[ext_resource type="PackedScene" uid="uid://17cmg5urto4y" path="res://scenes/eggs/effects/shooting_plant_effect.tscn" id="1_u88lg"]
+[ext_resource type="Script" uid="uid://bipw3saiu1rri" path="res://scenes/eggs/egg_data.gd" id="1_xw4hu"]
+[ext_resource type="Texture2D" uid="uid://diw4yjdashasx" path="res://assets/30 Easter Eggs By Albhedos Workshop/07.png" id="2_x7mut"]
+
+[resource]
+script = ExtResource("1_xw4hu")
+egg_name = "Shooting Plant Egg"
+icon = ExtResource("2_x7mut")
+effect_scene = ExtResource("1_u88lg")
+metadata/_custom_type_script = "uid://bipw3saiu1rri"

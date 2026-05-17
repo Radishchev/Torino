@@ -117,7 +117,7 @@ size = Vector2(16, 8)
 size = Vector2(16, 8)
 
 [node name="MultiplayerPlayer" type="CharacterBody2D" unique_id=122879260]
-collision_mask = 2
+collision_mask = 26
 script = ExtResource("1_80evv")
 egg_object_scene = ExtResource("2_k8tkd")
 

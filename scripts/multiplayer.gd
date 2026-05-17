@@ -17,6 +17,13 @@ const SPIKE_SCENE = preload(
 	"res://scenes/spike.tscn"
 )
 
+const SHOOTING_PLANT_SCENE = preload(
+	"res://scenes/shooting_plant.tscn"
+)
+
+const BULLET_SCENE = preload(
+	"res://scenes/bullet.tscn"
+)
 
 ####################################################
 # TEST EGG DATA
@@ -30,6 +37,9 @@ const SPIKE_EGG = preload(
 	"res://scenes/eggs/resources/spike_egg.tres"
 )
 
+const SHOOTING_PLANT_EGG = preload(
+	"res://scenes/eggs/resources/shooting_plant_egg.tres"
+)
 
 
 ####################################################
@@ -45,6 +55,8 @@ const SPIKE_EGG = preload(
 
 @onready var spike_spawner = $SpikeSpawner
 
+@onready var shooting_plant_spawner = $ShootingPlantSpawner
+@onready var bullet_spawner = $BulletSpawner
 ####################################################
 # READY
 ####################################################
@@ -61,6 +73,9 @@ func _ready():
 	egg_spawner.spawn_function = spawn_network_egg
 	
 	spike_spawner.spawn_function = spawn_network_spike
+	
+	shooting_plant_spawner.spawn_function = spawn_network_shooting_plant
+	bullet_spawner.spawn_function = spawn_network_bullet
 
 	####################################################
 	# HOST STARTUP
@@ -151,7 +166,7 @@ func spawn_starting_eggs():
 	for spawn in egg_spawns.get_children():
 
 		spawn_egg(
-			SPIKE_EGG,
+			SHOOTING_PLANT_EGG,
 			spawn.global_position
 		)
 
@@ -390,3 +405,164 @@ func spawn_network_spike(data):
 		)
 
 	return root
+
+
+func spawn_shooting_plant(
+	position : Vector2,
+	direction : Vector2,
+	owner_peer_id : int
+):
+
+	####################################################
+	# ONLY SERVER SPAWNS
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	####################################################
+	# UNIQUE NAME
+	####################################################
+
+	var plant_name = (
+		"ShootingPlant_"
+		+ str(Time.get_ticks_usec())
+	)
+
+	####################################################
+	# SPAWN THROUGH MULTIPLAYER SPAWNER
+	####################################################
+
+	shooting_plant_spawner.spawn({
+		"name": plant_name,
+		"position": position,
+		"direction": direction,
+		"owner_peer_id": owner_peer_id
+	})
+
+func spawn_network_shooting_plant(data):
+
+	print(
+		"Shooting plant spawn data:",
+		data
+	)
+
+	####################################################
+	# CREATE PLANT
+	####################################################
+
+	var plant = (
+		SHOOTING_PLANT_SCENE.instantiate()
+	)
+
+	####################################################
+	# DETERMINISTIC NAME
+	####################################################
+
+	plant.name = data["name"]
+
+	####################################################
+	# DIRECTION
+	####################################################
+
+	var direction = data["direction"]
+
+	####################################################
+	# POSITION
+	####################################################
+
+	plant.global_position = (
+		data["position"]
+		- (direction * 20.0)
+	)
+
+	####################################################
+	# ROTATION
+	####################################################
+
+	plant.animation_direction = "up"
+
+	if direction == Vector2.UP:
+
+		plant.rotation_degrees = 0
+		plant.bullet_direction = "up"
+
+	elif direction == Vector2.RIGHT:
+
+		plant.rotation_degrees = 90
+		plant.bullet_direction = "right"
+
+	elif direction == Vector2.DOWN:
+
+		plant.rotation_degrees = 180
+		plant.bullet_direction = "down"
+
+	elif direction == Vector2.LEFT:
+
+		plant.rotation_degrees = -90
+		plant.bullet_direction = "left"
+
+	####################################################
+	# OWNER
+	####################################################
+
+	plant.owner_peer_id = int(
+		data["owner_peer_id"]
+	)
+
+	####################################################
+	# SUBTLE DEPTH
+	####################################################
+
+	plant.z_index = -1
+
+	print(
+		"Spawned shooting plant for peer:",
+		plant.owner_peer_id
+	)
+
+	return plant
+
+func spawn_bullet(
+	position : Vector2,
+	direction : String,
+	owner_peer_id : int
+):
+
+	if !multiplayer.is_server():
+		return
+
+	var bullet_name = (
+		"Bullet_"
+		+ str(Time.get_ticks_usec())
+	)
+
+	bullet_spawner.spawn({
+		"name": bullet_name,
+		"position": position,
+		"direction": direction,
+		"owner_peer_id": owner_peer_id
+	})
+
+func spawn_network_bullet(data):
+
+	var bullet = (
+		BULLET_SCENE.instantiate()
+	)
+
+	bullet.name = data["name"]
+
+	bullet.global_position = (
+		data["position"]
+	)
+
+	bullet.call_deferred(
+		"set_direction",
+		data["direction"]
+	)
+
+	bullet.owner_peer_id = int(
+		data["owner_peer_id"]
+	)
+
+	return bullet

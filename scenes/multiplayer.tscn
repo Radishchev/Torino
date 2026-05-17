@@ -136,3 +136,13 @@ position = Vector2(853, 609)
 spawn_path = NodePath("../Spikes")
 
 [node name="Spikes" type="Node2D" parent="." unique_id=1481435110]
+
+[node name="ShootingPlantSpawner" type="MultiplayerSpawner" parent="." unique_id=2015507127]
+spawn_path = NodePath("../ShootingPlants")
+
+[node name="ShootingPlants" type="Node2D" parent="." unique_id=135183059]
+
+[node name="BulletSpawner" type="MultiplayerSpawner" parent="." unique_id=382055376]
+spawn_path = NodePath("../Bullets")
+
+[node name="Bullets" type="Node2D" parent="." unique_id=544747905]

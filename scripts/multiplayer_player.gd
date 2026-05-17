@@ -53,7 +53,7 @@ var air_time := 0.0
 
 var egg_stack : Array[EggData] = []
 
-const MAX_EGGS := 3
+const MAX_EGGS := 5
 
 
 ####################################################
@@ -430,7 +430,17 @@ func die():
 		" died to peer:",
 		last_attacker_peer_id
 	)
+	####################################################
+	# CLEAR INVENTORY
+	####################################################
 
+	egg_stack.clear()
+
+	sync_inventory.rpc_id(
+		get_multiplayer_authority(),
+		get_inventory_paths()
+	)
+	
 	####################################################
 	# DISABLE COLLISIONS
 	####################################################
@@ -815,16 +825,10 @@ func throw_egg():
 	var egg_data = egg_stack.pop_back()
 
 	####################################################
-	# SERVER INVENTORY REMOVAL
+	# CLIENT REQUESTS SERVER REMOVAL
 	####################################################
 
-	if multiplayer.is_server():
-
-		if !egg_stack.is_empty():
-
-			egg_stack.pop_back()
-
-	else:
+	if !multiplayer.is_server():
 
 		request_remove_egg.rpc_id(1)
 

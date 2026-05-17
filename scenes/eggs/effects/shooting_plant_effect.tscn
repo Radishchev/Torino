@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://17cmg5urto4y"]
+
+[ext_resource type="Script" uid="uid://qke8w8diflgj" path="res://scenes/eggs/effects/shooting_plant_effect.gd" id="1_essub"]
+
+[node name="ShootingPlantEffect" type="Node" unique_id=1928165859]
+script = ExtResource("1_essub")

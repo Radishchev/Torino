@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://csupwa0mnp7il"]
+[gd_scene format=3 uid="uid://csupwa0mnp7il"]
 
 [ext_resource type="Script" uid="uid://djldf5m1p3wq2" path="res://scripts/shooting_plant.gd" id="1_m2btc"]
 [ext_resource type="Texture2D" uid="uid://bata1p5moj30h" path="res://assets/ShootingPlant(4).png" id="2_m2btc"]
@@ -422,22 +422,24 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m2btc"]
 size = Vector2(13, 22)
 
-[node name="ShootingPlant" type="Area2D"]
+[node name="ShootingPlant" type="Area2D" unique_id=32711747]
+collision_layer = 16
+collision_mask = 0
 script = ExtResource("1_m2btc")
 shoot_interval = 1.0
 bullet_scene = ExtResource("2_spxi3")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1270483584]
 position = Vector2(2, -30.108332)
 scale = Vector2(1, 1.0357527)
 sprite_frames = SubResource("SpriteFrames_ux7r8")
 animation = &"shoot_right"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=896342483]
 position = Vector2(1.5, -18)
 shape = SubResource("RectangleShape2D_m2btc")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=808688319]
 
-[node name="Marker2D" type="Marker2D" parent="."]
+[node name="Marker2D" type="Marker2D" parent="." unique_id=1349537676]
 position = Vector2(0, -22)
