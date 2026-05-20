@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EggData" format=3 uid="uid://b41g32yoblbvk"]
+
+[ext_resource type="Script" uid="uid://bipw3saiu1rri" path="res://scenes/eggs/egg_data.gd" id="1_1dciw"]
+[ext_resource type="Texture2D" uid="uid://wo8gi2dvrokw" path="res://assets/30 Easter Eggs By Albhedos Workshop/17.png" id="1_rd0hb"]
+[ext_resource type="PackedScene" uid="uid://dj4yo6i2ttn7m" path="res://scenes/eggs/effects/respawn_effect.tscn" id="2_pkaj7"]
+
+[resource]
+script = ExtResource("1_1dciw")
+egg_name = "Respawn Egg"
+icon = ExtResource("1_rd0hb")
+landed_effect_scene = ExtResource("2_pkaj7")
+break_velocity_threshold = 600.0
+metadata/_custom_type_script = "uid://bipw3saiu1rri"

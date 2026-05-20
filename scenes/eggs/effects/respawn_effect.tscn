@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dj4yo6i2ttn7m"]
+
+[ext_resource type="Script" uid="uid://7pfwd04jcvb" path="res://scenes/eggs/effects/respawn_effect.gd" id="1_v53yw"]
+
+[node name="Node" type="Node" unique_id=1847177061]
+script = ExtResource("1_v53yw")

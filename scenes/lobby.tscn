@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://ddk6xh78erf56"]
+
+[ext_resource type="Script" uid="uid://dsn5rtq8skbpn" path="res://scripts/lobby.gd" id="1_o1atq"]
+
+[node name="Lobby" type="Control" unique_id=1161596847]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o1atq")
+
+[node name="TitleLabel" type="Label" parent="." unique_id=1800943594]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="PlayerListLabel" type="Label" parent="." unique_id=28445902]
+layout_mode = 0
+offset_left = 61.0
+offset_top = 35.0
+offset_right = 118.0
+offset_bottom = 58.0
+text = "Players"
+
+[node name="PlayerList" type="VBoxContainer" parent="." unique_id=2070666035]
+layout_mode = 0
+offset_left = 67.0
+offset_top = 76.0
+offset_right = 107.0
+offset_bottom = 116.0
+
+[node name="StartButton" type="Button" parent="." unique_id=1221157261]
+layout_mode = 0
+offset_left = 337.0
+offset_top = 165.0
+offset_right = 436.0
+offset_bottom = 196.0
+text = "Start Match"
+
+[node name="LeaveButton" type="Button" parent="." unique_id=907038228]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 218.0
+offset_right = 441.0
+offset_bottom = 249.0
+text = "Leave Match"
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="LeaveButton" to="." method="_on_leave_button_pressed"]

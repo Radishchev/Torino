@@ -41,6 +41,10 @@ const SHOOTING_PLANT_EGG = preload(
 	"res://scenes/eggs/resources/shooting_plant_egg.tres"
 )
 
+const RESPAWN_EGG = preload(
+	"res://scenes/eggs/resources/respawn_egg.tres"
+)
+
 
 ####################################################
 # NODES
@@ -83,9 +87,25 @@ func _ready():
 
 	if multiplayer.is_server():
 
-		spawn_player(
-			multiplayer.get_unique_id()
-		)
+		####################################################
+		# WAIT FOR SPAWNERS
+		####################################################
+
+		await get_tree().process_frame
+
+		####################################################
+		# SPAWN ALL CONNECTED PLAYERS
+		####################################################
+
+		for peer_id in (
+			NetworkManager.player_usernames
+		):
+
+			spawn_player(peer_id)
+
+		####################################################
+		# STARTING EGGS
+		####################################################
 
 		spawn_starting_eggs()
 
@@ -166,7 +186,7 @@ func spawn_starting_eggs():
 	for spawn in egg_spawns.get_children():
 
 		spawn_egg(
-			SHOOTING_PLANT_EGG,
+			RESPAWN_EGG,
 			spawn.global_position
 		)
 

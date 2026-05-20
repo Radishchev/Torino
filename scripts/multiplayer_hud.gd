@@ -136,7 +136,7 @@ func update_eggs(egg_stack):
 
 		icon.texture = egg_data.icon
 
-		icon.custom_minimum_size = Vector2(32, 32)
+		icon.custom_minimum_size = Vector2(60, 60)
 
 		icon.expand_mode = (
 			TextureRect.EXPAND_IGNORE_SIZE

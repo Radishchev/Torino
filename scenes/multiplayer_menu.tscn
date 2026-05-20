@@ -44,14 +44,16 @@ offset_right = 689.0
 offset_bottom = 246.0
 text = "Available Games"
 
+[node name="LocalTest" type="Button" parent="." unique_id=1330951390]
+layout_mode = 0
+offset_right = 87.0
+offset_bottom = 31.0
+text = "BirdArena"
+
 [node name="GamesContainer" type="VBoxContainer" parent="." unique_id=2103830418]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="TestServer" type="Button" parent="GamesContainer" unique_id=1330951390]
-layout_mode = 2
-text = "BirdArena"
 
 [node name="RefreshButton" type="Button" parent="." unique_id=2010057776]
 layout_mode = 0
@@ -70,5 +72,6 @@ offset_bottom = 149.0
 text = "Back"
 
 [connection signal="pressed" from="HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="GamesContainer/TestServer" to="." method="_on_test_server_pressed"]
+[connection signal="pressed" from="LocalTest" to="." method="_on_local_test_pressed"]
+[connection signal="pressed" from="RefreshButton" to="." method="_on_refresh_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c2s7gv315u58f" path="res://scripts/multiplayer_player.gd" id="1_80evv"]
 [ext_resource type="Texture2D" uid="uid://cor72fxwuxj7v" path="res://assets/Pixel Art Bird 16x16/BirdSprite.png" id="2_2d20i"]
 [ext_resource type="PackedScene" uid="uid://b5lay31e7mdr" path="res://scenes/eggs/egg_object.tscn" id="2_k8tkd"]
+[ext_resource type="FontFile" uid="uid://nal13tosu7ib" path="res://assets/Fonts/fff-forward/FFFFORWA.TTF" id="4_k8tkd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
 atlas = ExtResource("2_2d20i")
@@ -145,17 +146,6 @@ drag_vertical_enabled = true
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=2007606627]
 replication_config = SubResource("SceneReplicationConfig_xk3hh")
 
-[node name="UsernameLabel" type="Label" parent="." unique_id=729910126]
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = -20.0
-offset_top = -36.0
-offset_right = 20.0
-offset_bottom = -13.0
-grow_horizontal = 2
-size_flags_horizontal = 10
-size_flags_vertical = 6
-
 [node name="Hurtbox" type="Area2D" parent="." unique_id=531206582]
 collision_layer = 8
 collision_mask = 0
@@ -172,15 +162,31 @@ collision_mask = 8
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_2d20i")
 
-[node name="WorldHearts" type="HBoxContainer" parent="." unique_id=1704292510]
-anchors_preset = 14
+[node name="UIContainer" type="VBoxContainer" parent="." unique_id=1279766716]
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -16.0
-offset_bottom = -16.0
+offset_left = -20.0
+offset_top = -55.0
+offset_right = 20.0
+offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="UsernameLabel" type="Label" parent="UIContainer" unique_id=729910126]
+texture_filter = 2
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 10
+theme_override_fonts/font = ExtResource("4_k8tkd")
+theme_override_font_sizes/font_size = 8
+text = "sample"
+
+[node name="WorldHearts" type="HBoxContainer" parent="UIContainer" unique_id=1704292510]
+layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -2
 alignment = 1

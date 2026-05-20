@@ -40,10 +40,10 @@ var air_time := 0.0
 ####################################################
 
 @onready var camera = $Camera2D
-@onready var username_label = $UsernameLabel
+@onready var username_label = $UIContainer/UsernameLabel
 @onready var attack_area = $AttackArea
 @onready var anim = $AnimatedSprite2D
-@onready var world_hearts = $WorldHearts
+@onready var world_hearts = $UIContainer/WorldHearts
 @onready var collision = $CollisionShape2D
 
 ####################################################
@@ -53,8 +53,11 @@ var air_time := 0.0
 
 var egg_stack : Array[EggData] = []
 
-const MAX_EGGS := 5
+const MAX_EGGS := 3
 
+var active_respawn_egg: Node = null
+var has_respawn_egg := false
+var respawn_egg_position := Vector2.ZERO
 
 ####################################################
 # USERNAME
@@ -369,7 +372,44 @@ func die():
 
 	if is_dead:
 		return
+	####################################################
+	# RESPAWN EGG
+	####################################################
 
+	if has_respawn_egg:
+
+		if is_instance_valid(active_respawn_egg):
+
+			print(username, " respawned from egg")
+
+			var respawn_position = (
+				respawn_egg_position
+			)
+
+			####################################################
+			# CONSUME EGG
+			####################################################
+
+			if multiplayer.is_server():
+
+				active_respawn_egg.queue_free()
+
+			clear_respawn_egg.rpc()
+
+			####################################################
+			# RESPAWN
+			####################################################
+
+			is_dead = true
+
+			respawn(
+				respawn_position,
+				true,
+				true,
+				1
+			)
+
+			return
 	is_dead = true
 	
 	####################################################
@@ -478,11 +518,18 @@ func die():
 		#world_hearts.visible = !dead
 		#
 
-func respawn():
+func respawn(
+	custom_position := Vector2.ZERO,
+	use_custom_position := false,
+	instant := false,
+	respawn_health := -1
+):
 
-	await get_tree().create_timer(
-		respawn_time
-	).timeout
+	if !instant:
+
+		await get_tree().create_timer(
+			respawn_time
+		).timeout
 
 	####################################################
 	# FIND LEVEL
@@ -497,19 +544,25 @@ func respawn():
 		return
 
 	####################################################
-	# RANDOM SPAWN
+	# RESPAWN POSITION
 	####################################################
 
-	var spawn_points = (
-		level.spawn_points.get_children()
-	)
+	if use_custom_position:
 
-	if spawn_points.is_empty():
-		return
+		global_position = custom_position
 
-	var spawn = spawn_points.pick_random()
+	else:
 
-	global_position = spawn.global_position
+		var spawn_points = (
+			level.spawn_points.get_children()
+		)
+
+		if spawn_points.is_empty():
+			return
+
+		var spawn = spawn_points.pick_random()
+
+		global_position = spawn.global_position
 	
 	camera.global_position = global_position
 
@@ -517,7 +570,13 @@ func respawn():
 	# RESET HEALTH
 	####################################################
 
-	health = max_health
+	if respawn_health == -1:
+
+		health = max_health
+
+	else:
+
+		health = respawn_health
 
 	is_dead = false
 	
@@ -545,12 +604,6 @@ func respawn():
 			hud.hide_leaderboard()
 
 	####################################################
-	# RESTORE VISUALS FOR EVERYONE
-	####################################################
-
-	#sync_death_visuals.rpc(false)
-
-	####################################################
 	# RESTORE COLLISIONS
 	####################################################
 
@@ -576,7 +629,6 @@ func respawn():
 			elapsed / invincible_time
 		)
 
-		# Starts slow → becomes fast
 		var blink_interval = lerp(
 			0.25,
 			0.05,
@@ -618,7 +670,30 @@ func respawn():
 	blink_visible = true
 
 	print(username, " respawned")
+	
 
+@rpc("any_peer", "call_local")
+func set_respawn_egg(
+	egg_path: NodePath,
+	pos: Vector2
+):
+
+	active_respawn_egg = get_node_or_null(
+		egg_path
+	)
+
+	has_respawn_egg = (
+		active_respawn_egg != null
+	)
+
+	respawn_egg_position = pos
+
+@rpc("call_local")
+func clear_respawn_egg():
+
+	active_respawn_egg = null
+	has_respawn_egg = false
+	
 func attack():
 	
 	if is_dead:

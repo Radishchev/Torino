@@ -22,7 +22,7 @@ signal egg_landed
 # SETTINGS
 ###############################################################
 
-@export var break_velocity_threshold := 250.0
+#@export var break_velocity_threshold := 250.0
 
 
 ###############################################################
@@ -202,8 +202,8 @@ func _on_pickup_area_entered(area):
 	###############################################################
 	# MARK USED
 	###############################################################
-
-	used = true
+	if egg_data.egg_name == "Respawn Egg":
+		used = true
 
 	###############################################################
 	# DEBUG
@@ -261,8 +261,13 @@ func _on_body_entered(
 	###############################################################
 	# BREAK
 	###############################################################
-
-	if impact > break_velocity_threshold:
+	print(
+		"Impact:",
+		impact,
+		" Threshold:",
+		egg_data.break_velocity_threshold
+	)
+	if impact > egg_data.break_velocity_threshold:
 
 		broke = true
 
@@ -319,7 +324,7 @@ func land_egg():
 
 		get_tree().current_scene.add_child(effect)
 
-		effect.activate(self)
+		effect.activate(self, Vector2.ZERO)
 
 
 ###############################################################

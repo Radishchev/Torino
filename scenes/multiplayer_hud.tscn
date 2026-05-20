@@ -6,15 +6,15 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_07v4m"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(81, 1, 14, 14)
+region = Rect2(80, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4ebn3"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(241, 1, 14, 14)
+region = Rect2(240, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eklao"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(97, 1, 14, 14)
+region = Rect2(96, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fohl6"]
 atlas = ExtResource("3_ybnum")
@@ -22,19 +22,19 @@ region = Rect2(257, 1, 14, 14)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0014g"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(97, 17, 14, 14)
+region = Rect2(96, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6vv8v"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(257, 17, 14, 14)
+region = Rect2(256, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7pitv"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(81, 17, 14.568382, 14)
+region = Rect2(80, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vksas"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(241, 17, 14, 14)
+region = Rect2(240, 16, 16, 16)
 
 [node name="MultiplayerHUD" type="Control" unique_id=985089033 groups=["hud"]]
 layout_mode = 3
@@ -46,20 +46,25 @@ grow_vertical = 2
 script = ExtResource("1_3424s")
 heart_texture = ExtResource("2_v25y6")
 
-[node name="DebugLabel" type="Label" parent="." unique_id=71378409]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
 [node name="HeartsContainer" type="HBoxContainer" parent="." unique_id=256409680]
-layout_mode = 0
+layout_mode = 1
+offset_top = -31.0
 offset_right = 171.0
-offset_bottom = 106.0
+offset_bottom = 75.0
 
 [node name="EggContainer" type="HBoxContainer" parent="." unique_id=212414156]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+clip_contents = true
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -274.0
+offset_right = 32.0
+offset_bottom = -234.0
+grow_vertical = 2
+theme_override_constants/separation = -13
 
 [node name="Label" type="Label" parent="." unique_id=1560277198]
 visible = false
@@ -73,6 +78,11 @@ offset_right = 34.5
 offset_bottom = 167.5
 grow_horizontal = 2
 text = "You Died"
+
+[node name="DebugLabel" type="Label" parent="." unique_id=71378409]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
 
 [node name="LeaderboardPanel" type="Panel" parent="." unique_id=226040128]
 layout_mode = 1
@@ -102,29 +112,33 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="LeftButton" type="TouchScreenButton" parent="MobileControls" unique_id=1511220481]
-position = Vector2(77, 540)
-scale = Vector2(4, 4)
+modulate = Color(1, 1, 1, 0.6156863)
+position = Vector2(43, 479)
+scale = Vector2(8, 8)
 texture_normal = SubResource("AtlasTexture_07v4m")
 texture_pressed = SubResource("AtlasTexture_4ebn3")
 action = "move_left"
 
 [node name="RightButton" type="TouchScreenButton" parent="MobileControls" unique_id=728198220]
-position = Vector2(226, 540)
-scale = Vector2(4, 4)
+modulate = Color(1, 1, 1, 0.6156863)
+position = Vector2(273, 475)
+scale = Vector2(8, 8)
 texture_normal = SubResource("AtlasTexture_eklao")
 texture_pressed = SubResource("AtlasTexture_fohl6")
 action = "move_right"
 
 [node name="FlapButton" type="TouchScreenButton" parent="MobileControls" unique_id=1926303677]
-position = Vector2(1000, 457)
-scale = Vector2(4, 4)
+modulate = Color(1, 1, 1, 0.6156863)
+position = Vector2(999, 286)
+scale = Vector2(8, 8)
 texture_normal = SubResource("AtlasTexture_0014g")
 texture_pressed = SubResource("AtlasTexture_6vv8v")
 action = "flap"
 
 [node name="EggButton" type="TouchScreenButton" parent="MobileControls" unique_id=2040163356]
-position = Vector2(1000, 541)
-scale = Vector2(4, 4)
+modulate = Color(1, 1, 1, 0.6156863)
+position = Vector2(1003, 479)
+scale = Vector2(8, 8)
 texture_normal = SubResource("AtlasTexture_7pitv")
 texture_pressed = SubResource("AtlasTexture_vksas")
 action = "drop_egg"

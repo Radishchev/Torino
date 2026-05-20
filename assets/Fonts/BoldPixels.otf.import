@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://c5lpwnt5kpk78"
-path="res://.godot/imported/BoldPixels.otf-d3b22cacb2635c96b1515e001a2d1ce1.fontdata"
+path="res://.godot/imported/BoldPixels.otf-0e6bd8abec0aebc4d19de01d89d1dfce.fontdata"
 
 [deps]
 
-source_file="res://assets/BoldPixels.otf"
-dest_files=["res://.godot/imported/BoldPixels.otf-d3b22cacb2635c96b1515e001a2d1ce1.fontdata"]
+source_file="res://assets/Fonts/BoldPixels.otf"
+dest_files=["res://.godot/imported/BoldPixels.otf-0e6bd8abec0aebc4d19de01d89d1dfce.fontdata"]
 
 [params]
 
