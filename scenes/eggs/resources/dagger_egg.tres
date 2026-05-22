@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EggData" format=3 uid="uid://c5mcunom6fvit"]
+
+[ext_resource type="Script" uid="uid://bipw3saiu1rri" path="res://scenes/eggs/egg_data.gd" id="1_3f4lu"]
+[ext_resource type="PackedScene" uid="uid://btrxcio2x313f" path="res://scenes/eggs/effects/dagger_effect.tscn" id="1_7t3t0"]
+[ext_resource type="Texture2D" uid="uid://bdgtk2uqxv2vw" path="res://assets/30 Easter Eggs By Albhedos Workshop/23.png" id="2_hqp47"]
+
+[resource]
+script = ExtResource("1_3f4lu")
+egg_name = "Dagger Egg"
+icon = ExtResource("2_hqp47")
+rarity = 5
+effect_scene = ExtResource("1_7t3t0")
+metadata/_custom_type_script = "uid://bipw3saiu1rri"

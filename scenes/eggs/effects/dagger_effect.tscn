@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://btrxcio2x313f"]
+
+[ext_resource type="Script" uid="uid://oasjgqmu7g25" path="res://scenes/eggs/effects/dagger_effect.gd" id="1_1fswp"]
+
+[node name="DaggerEffect" type="Node" unique_id=824551179]
+script = ExtResource("1_1fswp")

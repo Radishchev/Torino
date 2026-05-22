@@ -53,13 +53,15 @@ offset_left = 738.0
 offset_top = 188.0
 offset_right = 848.0
 offset_bottom = 219.0
-item_count = 3
-popup/item_0/text = "3 Minute"
-popup/item_0/id = 0
-popup/item_1/text = "5 Minutes"
-popup/item_1/id = 1
-popup/item_2/text = "10 Minute"
-popup/item_2/id = 2
+item_count = 4
+popup/item_0/text = "1 Minute"
+popup/item_0/id = 3
+popup/item_1/text = "3 Minute"
+popup/item_1/id = 0
+popup/item_2/text = "5 Minutes"
+popup/item_2/id = 1
+popup/item_3/text = "10 Minute"
+popup/item_3/id = 2
 
 [connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="LeaveButton" to="." method="_on_leave_button_pressed"]

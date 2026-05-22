@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cor72fxwuxj7v" path="res://assets/Pixel Art Bird 16x16/BirdSprite.png" id="2_2d20i"]
 [ext_resource type="PackedScene" uid="uid://b5lay31e7mdr" path="res://scenes/eggs/egg_object.tscn" id="2_k8tkd"]
 [ext_resource type="FontFile" uid="uid://nal13tosu7ib" path="res://assets/Fonts/fff-forward/FFFFORWA.TTF" id="4_k8tkd"]
+[ext_resource type="Texture2D" uid="uid://ofuag6ncy3bn" path="res://assets/dagers.png" id="5_jlq18"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
 atlas = ExtResource("2_2d20i")
@@ -110,12 +111,22 @@ properties/4/replication_mode = 1
 properties/5/path = NodePath(".:position")
 properties/5/spawn = true
 properties/5/replication_mode = 1
+properties/6/path = NodePath(".:has_dagger")
+properties/6/spawn = true
+properties/6/replication_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80evv"]
 size = Vector2(16, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2d20i"]
 size = Vector2(16, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xk3hh"]
+atlas = ExtResource("5_jlq18")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m4ka2"]
+size = Vector2(3.8170123, 17.19071)
 
 [node name="MultiplayerPlayer" type="CharacterBody2D" unique_id=122879260]
 physics_interpolation_mode = 1
@@ -128,6 +139,7 @@ position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_k8tkd")
 animation = &"flying"
 autoplay = "idle"
+frame_progress = 0.6556567
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1772190957]
@@ -189,3 +201,21 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = -2
 alignment = 1
+
+[node name="WeaponHolder" type="Node2D" parent="." unique_id=1614297531]
+
+[node name="Sprite2D" type="Sprite2D" parent="WeaponHolder" unique_id=60306363]
+z_index = -1
+position = Vector2(12, -13)
+rotation = 0.9075712
+texture = SubResource("AtlasTexture_xk3hh")
+
+[node name="KnifeHitbox" type="Area2D" parent="WeaponHolder" unique_id=118959336]
+collision_mask = 9
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponHolder/KnifeHitbox" unique_id=657977345]
+position = Vector2(11, -13)
+rotation = 0.9075712
+shape = SubResource("RectangleShape2D_m4ka2")
+
+[connection signal="area_entered" from="WeaponHolder/KnifeHitbox" to="." method="_on_knife_hitbox_area_entered"]

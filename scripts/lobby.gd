@@ -87,7 +87,7 @@ func _on_start_button_pressed():
 	####################################################
 
 	var durations = [
-		20,
+		60,
 		180,
 		300,
 		600
@@ -107,7 +107,10 @@ func _on_start_button_pressed():
 	####################################################
 	# LOAD GAME FOR EVERYONE
 	####################################################
-
+	NetworkManager.current_match_state = (
+		NetworkManager.MatchState.IN_GAME
+	)
+	
 	NetworkManager.start_match.rpc()
 
 func _on_leave_button_pressed():

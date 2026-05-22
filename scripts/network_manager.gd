@@ -60,6 +60,15 @@ var random_second = [
 	"Spark"
 ]
 
+enum MatchState {
+	LOBBY,
+	IN_GAME,
+	MATCH_END
+}
+
+var current_match_state = (
+	MatchState.LOBBY
+)
 
 var match_duration := 300
 
@@ -257,7 +266,10 @@ func start_lan_broadcast():
 
 	udp_server.set_broadcast_enabled(true)
 
-	while true:
+	while (
+		multiplayer.multiplayer_peer != null
+		and multiplayer.is_server()
+	):
 
 		####################################################
 		# VALID PEER
@@ -575,3 +587,9 @@ func end_match_rpc(winner_name):
 		hud.show_match_finished(
 			winner_name
 		)
+
+
+@rpc("authority", "call_local")
+func sync_match_state(state):
+
+	current_match_state = state

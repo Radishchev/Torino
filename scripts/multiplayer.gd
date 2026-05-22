@@ -25,6 +25,7 @@ const BULLET_SCENE = preload(
 	"res://scenes/bullet.tscn"
 )
 
+
 ####################################################
 # TEST EGG DATA
 ####################################################
@@ -45,6 +46,10 @@ const RESPAWN_EGG = preload(
 	"res://scenes/eggs/resources/respawn_egg.tres"
 )
 
+const DAGGER_EGG = preload(
+	"res://scenes/eggs/resources/dagger_egg.tres"
+)
+
 ####################################################
 # RANDOM EGG POOL
 ####################################################
@@ -53,7 +58,8 @@ var egg_pool = [
 	HEAL_EGG,
 	SPIKE_EGG,
 	SHOOTING_PLANT_EGG,
-	RESPAWN_EGG
+	RESPAWN_EGG,
+	DAGGER_EGG
 ]
 ####################################################
 # NODES
@@ -908,7 +914,9 @@ func start_match_timer():
 func end_match():
 
 	print("Match ended")
-
+	
+	match_finished = true
+	
 	####################################################
 	# FIND WINNER
 	####################################################
@@ -956,6 +964,8 @@ func end_match():
 	NetworkManager.end_match_rpc.rpc(
 		winner_name
 	)
+	
+	
 
 	####################################################
 	# WAIT 10 SECONDS
@@ -978,5 +988,5 @@ func end_match():
 	####################################################
 
 	get_tree().change_scene_to_file(
-		"res://scenes/multiplayer_menu.tscn"
+		"res://scenes/Main_Menu.tscn"
 	)

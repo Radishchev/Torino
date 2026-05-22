@@ -46,6 +46,12 @@ var air_time := 0.0
 @onready var world_hearts = $UIContainer/WorldHearts
 @onready var collision = $CollisionShape2D
 
+@onready var weapon_holder = $WeaponHolder
+
+@onready var knife_hitbox = (
+	$WeaponHolder/KnifeHitbox
+)
+
 ####################################################
 # INVENTORY
 ####################################################
@@ -58,6 +64,9 @@ const MAX_EGGS := 3
 var active_respawn_egg: Node = null
 var has_respawn_egg := false
 var respawn_egg_position := Vector2.ZERO
+
+@export var has_dagger := false
+var dagger_timer_id := 0
 
 ####################################################
 # USERNAME
@@ -191,6 +200,7 @@ func _ready():
 	var sync = get_node("MultiplayerSynchronizer")
 
 	
+	
 	# Authority comes from node name
 	#set_multiplayer_authority(name.to_int())
 
@@ -226,7 +236,9 @@ func _ready():
 			health,
 			max_health
 		)
-
+	
+	weapon_holder.visible = false
+	
 	# Initial animation
 	if is_on_floor():
 		anim.play(idle_anim_name)
@@ -248,16 +260,37 @@ func _ready():
 ####################################################
 
 func _physics_process(delta):
-	
-	
-	# Safety check
+
+	####################################################
+	# SAFETY CHECK
+	####################################################
+
 	if multiplayer.multiplayer_peer == null:
+		return
+
+	####################################################
+	# MATCH FINISHED
+	####################################################
+
+	var level = (
+		get_tree()
+		.get_first_node_in_group("level")
+	)
+
+	if level and level.match_finished:
 		return
 
 	####################################################
 	# LOCAL PLAYER MOVEMENT
 	####################################################
 
+
+	####################################################
+	# LOCAL PLAYER MOVEMENT
+	####################################################
+	
+	weapon_holder.visible = has_dagger
+	knife_hitbox.monitoring = has_dagger
 	if is_multiplayer_authority():
 		####################################################
 		# DEAD PLAYERS CANNOT CONTROL
@@ -307,6 +340,8 @@ func _physics_process(delta):
 
 		move_and_slide()
 		
+		dagger_attack()
+		
 		
 		if Input.is_action_just_pressed("drop_egg"):
 
@@ -348,7 +383,10 @@ func _physics_process(delta):
 	####################################################
 	# VISUALS (RUNS FOR EVERYONE)
 	####################################################
-
+	
+	weapon_holder.visible = has_dagger
+	knife_hitbox.monitoring = has_dagger
+	
 	# Animation
 	if anim.animation != current_anim:
 
@@ -356,7 +394,14 @@ func _physics_process(delta):
 
 	# Facing
 	anim.flip_h = facing_right
+	
+	if facing_right:
 
+		weapon_holder.scale.x = 1
+
+	else:
+
+		weapon_holder.scale.x = -1
 	# Animation speed
 	anim.speed_scale = clamp(
 		remap(
@@ -379,6 +424,7 @@ func die():
 
 	if is_dead:
 		return
+
 	####################################################
 	# RESPAWN EGG
 	####################################################
@@ -404,6 +450,14 @@ func die():
 			clear_respawn_egg.rpc()
 
 			####################################################
+			# REMOVE TEMP EFFECTS
+			####################################################
+
+			has_dagger = false
+			knife_hitbox.monitoring = false
+			weapon_holder.visible = false
+
+			####################################################
 			# RESPAWN
 			####################################################
 
@@ -417,14 +471,15 @@ func die():
 			)
 
 			return
+
 	is_dead = true
-	
+
 	####################################################
 	# SHOW LEADERBOARD
 	####################################################
 
 	if is_multiplayer_authority():
-	
+
 		var hud = (
 			get_tree()
 			.get_first_node_in_group("hud")
@@ -433,13 +488,22 @@ func die():
 		if hud:
 
 			hud.show_leaderboard()
-			
+
 		spectate_killer()
+
 	####################################################
 	# SYNCHRONIZED VISIBILITY
 	####################################################
 
 	blink_visible = false
+
+	####################################################
+	# REMOVE TEMP EFFECTS
+	####################################################
+
+	has_dagger = false
+
+	knife_hitbox.monitoring = false
 
 	####################################################
 	# AWARD KILL
@@ -477,6 +541,7 @@ func die():
 		" died to peer:",
 		last_attacker_peer_id
 	)
+
 	####################################################
 	# CLEAR INVENTORY
 	####################################################
@@ -487,7 +552,7 @@ func die():
 		get_multiplayer_authority(),
 		get_inventory_paths()
 	)
-	
+
 	####################################################
 	# DISABLE COLLISIONS
 	####################################################
@@ -505,25 +570,7 @@ func die():
 	####################################################
 
 	respawn()
-#@rpc("call_local")
-#func sync_death_visuals(dead : bool):
-#
-	#####################################################
-	## PLAYER VISUALS
-	#####################################################
-#
-	#anim.visible = !dead
-#
-	#username_label.visible = !dead
-#
-	#####################################################
-	## WORLD HEARTS
-	#####################################################
-#
-	#if !is_multiplayer_authority():
-#
-		#world_hearts.visible = !dead
-		#
+	
 
 func respawn(
 	custom_position := Vector2.ZERO,
@@ -586,6 +633,16 @@ func respawn(
 		health = respawn_health
 
 	is_dead = false
+	
+	####################################################
+	# RESET TEMP EFFECTS
+	####################################################
+
+	has_dagger = false
+
+	weapon_holder.visible = false
+
+	knife_hitbox.monitoring = false
 	
 	####################################################
 	# STOP SPECTATING
@@ -727,6 +784,91 @@ func attack():
 				enemy.username
 			)
 
+
+func dagger_attack():
+
+	if is_dead:
+		return
+
+	if !has_dagger:
+		return
+
+	for area in knife_hitbox.get_overlapping_areas():
+
+		if area.name == "Hurtbox":
+
+			var enemy = area.get_parent()
+
+			if enemy == self:
+				continue
+
+			enemy.take_damage.rpc_id(
+				enemy.get_multiplayer_authority(),
+				999,
+				multiplayer.get_unique_id()
+			)
+
+			print(
+				username,
+				" stabbed ",
+				enemy.username
+			)
+
+@rpc("any_peer", "call_local")
+func activate_dagger(duration := 3.0):
+
+	####################################################
+	# ENABLE DAGGER
+	####################################################
+
+	has_dagger = true
+
+	####################################################
+	# UNIQUE TIMER ID
+	####################################################
+
+	dagger_timer_id += 1
+
+	var current_timer = dagger_timer_id
+
+	print(
+		username,
+		" activated dagger"
+	)
+
+	####################################################
+	# WAIT
+	####################################################
+
+	await get_tree().create_timer(
+		duration
+	).timeout
+
+	####################################################
+	# NEWER DAGGER ACTIVATED
+	####################################################
+
+	if current_timer != dagger_timer_id:
+		return
+
+	####################################################
+	# PLAYER MAY HAVE DIED
+	####################################################
+
+	if is_dead:
+		return
+
+	####################################################
+	# REMOVE DAGGER
+	####################################################
+
+	has_dagger = false
+
+	print(
+		username,
+		" dagger expired"
+	)
+	
 
 @rpc("any_peer")
 func take_damage(
