@@ -178,6 +178,7 @@ func update_world_hearts():
 
 		world_hearts.add_child(heart)
 
+		
 ####################################################
 # READY
 ####################################################
@@ -185,10 +186,13 @@ func update_world_hearts():
 func _ready():
 
 	# Wait one frame so replication is finished
-	await get_tree().process_frame
+	#await get_tree().process_frame
+	
+	var sync = get_node("MultiplayerSynchronizer")
 
+	
 	# Authority comes from node name
-	set_multiplayer_authority(name.to_int())
+	#set_multiplayer_authority(name.to_int())
 
 	# Local player setup
 	if is_multiplayer_authority():
@@ -244,7 +248,8 @@ func _ready():
 ####################################################
 
 func _physics_process(delta):
-
+	
+	
 	# Safety check
 	if multiplayer.multiplayer_peer == null:
 		return
@@ -301,6 +306,7 @@ func _physics_process(delta):
 			attack()
 
 		move_and_slide()
+		
 		
 		if Input.is_action_just_pressed("drop_egg"):
 
@@ -363,7 +369,8 @@ func _physics_process(delta):
 		0.7,
 		1.6
 	)
-
+	
+	
 ####################################################
 # DAMAGE / COMBAT
 ####################################################

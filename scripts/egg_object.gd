@@ -37,6 +37,8 @@ var broke := false
 
 var pickup_blocked := false
 
+var world_spawned := false
+
 var last_velocity := Vector2.ZERO
 
 var collision_direction := Vector2.UP
@@ -85,10 +87,15 @@ func _ready():
 ###############################################################
 
 func _physics_process(delta):
-	if !multiplayer.is_server():
 
-		freeze = true
-		return
+	###############################################################
+	# ONLY SERVER SIMULATES EGG PHYSICS
+	###############################################################
+
+	if multiplayer.has_multiplayer_peer():
+
+		if !multiplayer.is_server():
+			return
 
 	last_velocity = linear_velocity
 
@@ -198,6 +205,14 @@ func _on_pickup_area_entered(area):
 
 	if !success:
 		return
+	
+	###############################################################
+	# RESTORE PHYSICS
+	###############################################################
+
+	set_deferred("freeze", false)
+
+	world_spawned = false
 
 	###############################################################
 	# MARK USED

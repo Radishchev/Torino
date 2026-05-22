@@ -8,6 +8,6 @@
 script = ExtResource("1_m0oio")
 egg_name = "Heal Egg"
 icon = ExtResource("2_ksey8")
-rarity = 5
+rarity = 3
 effect_scene = ExtResource("1_wm7wi")
 metadata/_custom_type_script = "uid://bipw3saiu1rri"

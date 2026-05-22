@@ -46,8 +46,10 @@ text = "Available Games"
 
 [node name="LocalTest" type="Button" parent="." unique_id=1330951390]
 layout_mode = 0
-offset_right = 87.0
-offset_bottom = 31.0
+offset_left = 462.0
+offset_top = 324.0
+offset_right = 549.0
+offset_bottom = 355.0
 text = "BirdArena"
 
 [node name="GamesContainer" type="VBoxContainer" parent="." unique_id=2103830418]

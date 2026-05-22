@@ -45,12 +45,21 @@ const RESPAWN_EGG = preload(
 	"res://scenes/eggs/resources/respawn_egg.tres"
 )
 
+####################################################
+# RANDOM EGG POOL
+####################################################
 
+var egg_pool = [
+	HEAL_EGG,
+	SPIKE_EGG,
+	SHOOTING_PLANT_EGG,
+	RESPAWN_EGG
+]
 ####################################################
 # NODES
 ####################################################
-
 @onready var players = $Players
+@onready var player_spawner = $MultiplayerSpawner
 @onready var spawn_points = $SpawnPoints
 
 @onready var eggs = $Eggs
@@ -61,6 +70,19 @@ const RESPAWN_EGG = preload(
 
 @onready var shooting_plant_spawner = $ShootingPlantSpawner
 @onready var bullet_spawner = $BulletSpawner
+
+####################################################
+# EGG SPAWNING
+####################################################
+
+var max_world_eggs := 6
+
+var egg_spawn_interval := 8.0
+
+
+var match_time_left := 0
+
+var match_finished := false
 ####################################################
 # READY
 ####################################################
@@ -70,22 +92,48 @@ func _ready():
 	add_to_group("level")
 
 	####################################################
-	# IMPORTANT
-	# MultiplayerSpawner setup
+	# MULTIPLAYER SPAWNERS
 	####################################################
 
-	egg_spawner.spawn_function = spawn_network_egg
-	
-	spike_spawner.spawn_function = spawn_network_spike
-	
-	shooting_plant_spawner.spawn_function = spawn_network_shooting_plant
-	bullet_spawner.spawn_function = spawn_network_bullet
+	player_spawner.spawn_function = (
+		spawn_network_player
+	)
+
+	egg_spawner.spawn_function = (
+		spawn_network_egg
+	)
+
+	spike_spawner.spawn_function = (
+		spawn_network_spike
+	)
+
+	shooting_plant_spawner.spawn_function = (
+		spawn_network_shooting_plant
+	)
+
+	bullet_spawner.spawn_function = (
+		spawn_network_bullet
+	)
 
 	####################################################
-	# HOST STARTUP
+	# SERVER CONNECTION EVENTS
 	####################################################
 
 	if multiplayer.is_server():
+	
+		match_time_left = (
+			NetworkManager.match_duration
+		)
+
+		start_match_timer()
+		
+		multiplayer.peer_connected.connect(
+			_on_peer_connected
+		)
+
+		multiplayer.peer_disconnected.connect(
+			_on_peer_disconnected
+		)
 
 		####################################################
 		# WAIT FOR SPAWNERS
@@ -94,11 +142,11 @@ func _ready():
 		await get_tree().process_frame
 
 		####################################################
-		# SPAWN ALL CONNECTED PLAYERS
+		# SPAWN EXISTING PLAYERS
 		####################################################
 
 		for peer_id in (
-			NetworkManager.player_usernames
+			NetworkManager.player_usernames.keys()
 		):
 
 			spawn_player(peer_id)
@@ -109,6 +157,51 @@ func _ready():
 
 		spawn_starting_eggs()
 
+		start_egg_spawn_loop()
+
+
+####################################################
+# PEER CONNECTIONS
+####################################################
+
+func _on_peer_connected(peer_id):
+
+	print(
+		"Peer connected:",
+		peer_id
+	)
+
+	await get_tree().process_frame
+
+	spawn_player(peer_id)
+
+func _on_peer_disconnected(peer_id):
+
+	print(
+		"Peer disconnected:",
+		peer_id
+	)
+
+	####################################################
+	# SERVER ONLY
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	####################################################
+	# REMOVE PLAYER
+	####################################################
+
+	if players.has_node(str(peer_id)):
+
+		players.get_node(
+			str(peer_id)
+		).queue_free()
+		
+####################################################
+# PLAYER SPAWNING
+####################################################
 
 ####################################################
 # PLAYER SPAWNING
@@ -117,19 +210,71 @@ func _ready():
 func spawn_player(peer_id):
 
 	####################################################
-	# PREVENT DUPLICATES
+	# SERVER ONLY
+	####################################################
+
+	if !multiplayer.is_server():
+		return
+
+	####################################################
+	# ALREADY EXISTS
 	####################################################
 
 	if players.has_node(str(peer_id)):
 		return
 
-	var player = PLAYER_SCENE.instantiate()
+	print(
+		"SERVER spawning player:",
+		peer_id
+	)
 
 	####################################################
-	# PLAYER SETUP
+	# SPAWN THROUGH MULTIPLAYERSPAWNER
+	####################################################
+
+	player_spawner.spawn({
+		"peer_id": peer_id
+	})
+
+####################################################
+# NETWORK PLAYER SPAWN
+####################################################
+
+func spawn_network_player(data):
+
+	var peer_id = int(
+		data["peer_id"]
+	)
+
+	print(
+		"Spawn network player:",
+		peer_id,
+		" on peer:",
+		multiplayer.get_unique_id()
+	)
+
+	####################################################
+	# CREATE PLAYER
+	####################################################
+
+	var player = (
+		PLAYER_SCENE.instantiate()
+	)
+
+	####################################################
+	# IMPORTANT
 	####################################################
 
 	player.name = str(peer_id)
+
+	player.set_multiplayer_authority(
+		peer_id,
+		true
+	)
+
+	####################################################
+	# USERNAME
+	####################################################
 
 	player.username = (
 		NetworkManager
@@ -138,63 +283,209 @@ func spawn_player(peer_id):
 	)
 
 	####################################################
-	# ADD PLAYER
+	# FIND FREE SPAWN POINT
 	####################################################
 
-	players.add_child(player, true)
+	var available_spawns = []
 
 	####################################################
-	# SPAWN POSITION
+	# CHECK ALL SPAWN POINTS
 	####################################################
 
-	var spawn_index = (
-		players.get_child_count() - 1
+	for spawn_point in spawn_points.get_children():
+
+		var occupied := false
+
+		####################################################
+		# CHECK EXISTING PLAYERS
+		####################################################
+
+		for existing_player in players.get_children():
+
+			if (
+				existing_player.global_position
+				.distance_to(
+					spawn_point.global_position
+				) < 8.0
+			):
+
+				occupied = true
+				break
+
+		####################################################
+		# STORE FREE SPAWN
+		####################################################
+
+		if !occupied:
+
+			available_spawns.append(
+				spawn_point
+			)
+
+	####################################################
+	# USE FREE SPAWN
+	####################################################
+
+	if available_spawns.size() > 0:
+
+		var selected_spawn = (
+			available_spawns[0]
+		)
+
+		player.global_position = (
+			selected_spawn.global_position
+		)
+
+	####################################################
+	# ALL OCCUPIED
+	# USE RANDOM SPAWN
+	####################################################
+
+	else:
+
+		var random_spawn = (
+			spawn_points
+			.get_children()
+			.pick_random()
+		)
+
+		player.global_position = (
+			random_spawn.global_position
 	)
-
-	spawn_index = clamp(
-		spawn_index,
-		0,
-		spawn_points.get_child_count() - 1
-	)
-
-	player.global_position = (
-		spawn_points
-		.get_child(spawn_index)
-		.global_position
-	)
-
-	####################################################
-	# DEBUG
-	####################################################
 
 	print(
-		"Spawned player:",
-		peer_id,
-		" username:",
-		player.username,
-		" at ",
+		"Player spawned at:",
 		player.global_position
 	)
 
+	####################################################
+	# IMPORTANT
+	# DO NOT add_child()
+	####################################################
 
+	return player
+
+####################################################
+# RANDOM EGG SELECTION
+####################################################
+
+func get_random_egg():
+
+	var weighted_pool = []
+
+	for egg in egg_pool:
+
+		for i in egg.rarity:
+
+			weighted_pool.append(egg)
+
+	return weighted_pool.pick_random()
+
+####################################################
+# RANDOM POSITION
+####################################################
+
+func get_random_egg_position():
+
+	return Vector2(
+
+		randf_range(32, 1136),
+
+		randf_range(32, 624)
+	)
+	
 ####################################################
 # STARTING EGGS
 ####################################################
 
 func spawn_starting_eggs():
 
-	for spawn in egg_spawns.get_children():
+	####################################################
+	# OLD MANUAL SPAWNING
+	####################################################
 
-		spawn_egg(
-			RESPAWN_EGG,
-			spawn.global_position
+	#for spawn in egg_spawns.get_children():
+#
+		#spawn_egg(
+			#SHOOTING_PLANT_EGG,
+			#spawn.global_position
+		#)
+
+	####################################################
+	# RANDOM SPAWNING
+	####################################################
+
+	var egg_count := 4
+
+	for i in egg_count:
+
+		var egg_data = (
+			get_random_egg()
 		)
 
+		var position = (
+			get_random_egg_position()
+		)
+
+		spawn_egg(
+			egg_data,
+			position
+		)
 
 ####################################################
 # NETWORK EGG SPAWNING
 ####################################################
 
+func start_egg_spawn_loop():
+
+	while true:
+
+		await get_tree().create_timer(
+			egg_spawn_interval
+		).timeout
+
+		####################################################
+		# SERVER ONLY
+		####################################################
+
+		if !multiplayer.is_server():
+			return
+
+		####################################################
+		# COUNT WORLD EGGS
+		####################################################
+
+		var current_eggs = (
+			eggs.get_child_count()
+		)
+
+		####################################################
+		# LIMIT
+		####################################################
+
+		if current_eggs >= max_world_eggs:
+			continue
+
+		####################################################
+		# SPAWN RANDOM EGG
+		####################################################
+
+		var egg_data = (
+			get_random_egg()
+		)
+
+		var position = (
+			get_random_egg_position()
+		)
+
+		spawn_egg(
+			egg_data,
+			position
+		)
+
+		print(
+			"Spawned random egg"
+		)
 func spawn_egg(
 	egg_data : EggData,
 	position : Vector2,
@@ -288,7 +579,16 @@ func spawn_network_egg(data):
 	egg.global_position = data["position"]
 
 	egg.linear_velocity = data["velocity"]
+	
+	####################################################
+	# STATIC WORLD EGGS
+	####################################################
 
+	if data["velocity"] == Vector2.ZERO:
+
+		egg.freeze = true
+		egg.world_spawned = true
+		
 	####################################################
 	# PICKUP DELAY
 	####################################################
@@ -586,3 +886,97 @@ func spawn_network_bullet(data):
 	)
 
 	return bullet
+
+
+func start_match_timer():
+
+	while match_time_left > 0:
+
+		await get_tree().create_timer(
+			1.0
+		).timeout
+		
+		match_time_left -= 1
+		print("Time left:", match_time_left)
+		NetworkManager.sync_match_time.rpc(
+			match_time_left
+		)
+
+	end_match()
+
+
+func end_match():
+
+	print("Match ended")
+
+	####################################################
+	# FIND WINNER
+	####################################################
+
+	var best_peer_id := -1
+
+	var best_score := -999999
+	
+	match_finished = true
+	
+	
+	for peer_id in (
+		NetworkManager.player_kills
+	):
+
+		var kills = (
+			NetworkManager.player_kills[
+				peer_id
+			]
+		)
+
+		if kills > best_score:
+
+			best_score = kills
+
+			best_peer_id = peer_id
+
+	####################################################
+	# WINNER NAME
+	####################################################
+
+	var winner_name = (
+		NetworkManager.player_usernames.get(
+			best_peer_id,
+			"Player"
+		)
+	)
+
+	print("Winner:", winner_name)
+
+	####################################################
+	# SHOW MATCH END FOR EVERYONE
+	####################################################
+
+	NetworkManager.end_match_rpc.rpc(
+		winner_name
+	)
+
+	####################################################
+	# WAIT 10 SECONDS
+	####################################################
+
+	await get_tree().create_timer(
+		10.0
+	).timeout
+
+	####################################################
+	# CLOSE CONNECTION
+	####################################################
+
+	if multiplayer.multiplayer_peer:
+
+		multiplayer.multiplayer_peer.close()
+
+	####################################################
+	# RETURN TO MENU
+	####################################################
+
+	get_tree().change_scene_to_file(
+		"res://scenes/multiplayer_menu.tscn"
+	)

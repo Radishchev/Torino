@@ -126,7 +126,7 @@ func _on_host_button_pressed():
 	NetworkManager.player_username = username
 
 	print("Hosting as:", username)
-
+	
 	NetworkManager.host_game()
 
 	get_tree().change_scene_to_file(

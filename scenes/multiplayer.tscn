@@ -95,6 +95,7 @@ spawn_path = NodePath("../Eggs")
 [node name="Eggs" type="Node2D" parent="." unique_id=1092400229 groups=["eggs"]]
 
 [node name="EggSpawns" type="Node2D" parent="." unique_id=295168464]
+visible = false
 
 [node name="Marker2D" type="Marker2D" parent="EggSpawns" unique_id=527670316]
 position = Vector2(309, 612)

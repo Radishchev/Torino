@@ -60,6 +60,11 @@ var random_second = [
 	"Spark"
 ]
 
+
+var match_duration := 300
+
+var current_match_time := 0
+
 ####################################################
 # LEADERBOARD
 ####################################################
@@ -78,6 +83,13 @@ func _ready():
 		_on_peer_disconnected
 	)
 
+
+@rpc("authority", "call_local")
+func sync_match_time(time_left):
+
+	current_match_time = time_left
+	
+	
 ####################################################
 # KILLS
 ####################################################
@@ -548,3 +560,18 @@ func _on_peer_disconnected(peer_id):
 		if player:
 
 			player.queue_free()
+
+
+@rpc("authority", "call_local")
+func end_match_rpc(winner_name):
+
+	var hud = (
+		get_tree()
+		.get_first_node_in_group("hud")
+	)
+
+	if hud:
+
+		hud.show_match_finished(
+			winner_name
+		)

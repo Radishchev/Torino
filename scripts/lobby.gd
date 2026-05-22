@@ -2,18 +2,24 @@ extends Control
 
 @onready var player_list = $PlayerList
 @onready var start_button = $StartButton
+@onready var match_length_option = $MatchLengthOption
 
 var displayed_players := []
 
 func _ready():
-	
+
 	print("Lobby loaded")
+
 	####################################################
 	# ONLY HOST CAN START
 	####################################################
 
 	start_button.visible = (
 		multiplayer.is_server()
+	)
+
+	match_length_option.disabled = (
+		!multiplayer.is_server()
 	)
 
 func _process(_delta):
@@ -75,6 +81,28 @@ func _on_start_button_pressed():
 
 	if !multiplayer.is_server():
 		return
+
+	####################################################
+	# MATCH TIMER
+	####################################################
+
+	var durations = [
+		20,
+		180,
+		300,
+		600
+	]
+
+	NetworkManager.match_duration = (
+		durations[
+			match_length_option.selected
+		]
+	)
+
+	print(
+		"Selected match duration:",
+		NetworkManager.match_duration
+	)
 
 	####################################################
 	# LOAD GAME FOR EVERYONE

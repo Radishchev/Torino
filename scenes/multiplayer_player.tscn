@@ -92,22 +92,22 @@ animations = [{
 size = Vector2(16, 8)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_xk3hh"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath(".:username")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:username")
+properties/1/path = NodePath(".:health")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath(".:health")
+properties/2/path = NodePath(".:facing_right")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:facing_right")
+properties/3/path = NodePath(".:current_anim")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath(".:current_anim")
+properties/4/path = NodePath(".:blink_visible")
 properties/4/spawn = true
 properties/4/replication_mode = 1
-properties/5/path = NodePath(".:blink_visible")
+properties/5/path = NodePath(".:position")
 properties/5/spawn = true
 properties/5/replication_mode = 1
 
@@ -118,6 +118,7 @@ size = Vector2(16, 8)
 size = Vector2(16, 8)
 
 [node name="MultiplayerPlayer" type="CharacterBody2D" unique_id=122879260]
+physics_interpolation_mode = 1
 collision_mask = 26
 script = ExtResource("1_80evv")
 egg_object_scene = ExtResource("2_k8tkd")
@@ -135,8 +136,6 @@ shape = SubResource("RectangleShape2D_jlq18")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=843217204]
 zoom = Vector2(2, 2)
-limit_left = 0
-limit_top = 0
 limit_right = 1168
 limit_bottom = 656
 position_smoothing_enabled = true

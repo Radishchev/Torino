@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cis5yk2uvu6ot" path="res://scripts/multiplayer_hud.gd" id="1_3424s"]
 [ext_resource type="Texture2D" uid="uid://c0sktf38g8ilt" path="res://assets/heart.png" id="2_v25y6"]
+[ext_resource type="FontFile" uid="uid://nal13tosu7ib" path="res://assets/Fonts/fff-forward/FFFFORWA.TTF" id="3_07v4m"]
 [ext_resource type="Texture2D" uid="uid://d4f18y2o7s661" path="res://assets/Gray_Buttons_Pixel.png" id="3_ybnum"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_07v4m"]
@@ -18,7 +19,7 @@ region = Rect2(96, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fohl6"]
 atlas = ExtResource("3_ybnum")
-region = Rect2(257, 1, 14, 14)
+region = Rect2(256, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0014g"]
 atlas = ExtResource("3_ybnum")
@@ -36,11 +37,33 @@ region = Rect2(80, 16, 16, 16)
 atlas = ExtResource("3_ybnum")
 region = Rect2(240, 16, 16, 16)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_ybnum"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(176, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uv1bt"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(0, 80, 48, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c0fbv"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(160, 80, 48, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gw7dx"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(80, 32, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_02ui7"]
+atlas = ExtResource("3_ybnum")
+region = Rect2(240, 32, 32, 16)
+
 [node name="MultiplayerHUD" type="Control" unique_id=985089033 groups=["hud"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 3.0
+offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3424s")
@@ -66,18 +89,21 @@ offset_bottom = -234.0
 grow_vertical = 2
 theme_override_constants/separation = -13
 
-[node name="Label" type="Label" parent="." unique_id=1560277198]
+[node name="DeathLabel" type="Label" parent="." unique_id=1560277198]
 visible = false
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -34.5
-offset_top = 144.5
-offset_right = 34.5
-offset_bottom = 167.5
+offset_left = -84.0
+offset_top = 51.0
+offset_right = 92.0
+offset_bottom = 95.0
 grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_07v4m")
+theme_override_font_sizes/font_size = 32
 text = "You Died"
+horizontal_alignment = 1
 
 [node name="DebugLabel" type="Label" parent="." unique_id=71378409]
 layout_mode = 0
@@ -142,3 +168,71 @@ scale = Vector2(8, 8)
 texture_normal = SubResource("AtlasTexture_7pitv")
 texture_pressed = SubResource("AtlasTexture_vksas")
 action = "drop_egg"
+
+[node name="PauseButton" type="TouchScreenButton" parent="." unique_id=135702742]
+modulate = Color(1, 1, 1, 0.34117648)
+position = Vector2(1068, 11)
+scale = Vector2(4, 4)
+texture_normal = SubResource("AtlasTexture_ybnum")
+
+[node name="PauseMenu" type="Panel" parent="." unique_id=2116265847]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu" unique_id=829378130]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -194.0
+offset_top = -186.0
+offset_right = 194.0
+offset_bottom = 186.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResumeButton" type="TouchScreenButton" parent="PauseMenu/VBoxContainer" unique_id=127079113]
+position = Vector2(79.99999, 109.99999)
+scale = Vector2(5, 5)
+texture_normal = SubResource("AtlasTexture_uv1bt")
+texture_pressed = SubResource("AtlasTexture_c0fbv")
+
+[node name="LeaveButton" type="TouchScreenButton" parent="PauseMenu/VBoxContainer" unique_id=1939876414]
+position = Vector2(114.99999, 223.99998)
+scale = Vector2(5, 5)
+texture_normal = SubResource("AtlasTexture_gw7dx")
+texture_pressed = SubResource("AtlasTexture_02ui7")
+
+[node name="TimerLabel" type="Label" parent="." unique_id=81466941]
+layout_mode = 0
+offset_left = 561.0
+offset_top = 6.0
+offset_right = 601.0
+offset_bottom = 29.0
+theme_override_fonts/font = ExtResource("3_07v4m")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=706353517]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="pressed" from="PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="released" from="PauseMenu/VBoxContainer/ResumeButton" to="." method="_on_resume_button_released"]
+[connection signal="released" from="PauseMenu/VBoxContainer/LeaveButton" to="." method="_on_leave_button_released"]
