@@ -34,7 +34,7 @@ const VY_THRESHOLD := 20.0
 
 var air_time := 0.0
 
-
+var shake_strength := 0.0
 ####################################################
 # NODES
 ####################################################
@@ -51,6 +51,9 @@ var air_time := 0.0
 @onready var knife_hitbox = (
 	$WeaponHolder/KnifeHitbox
 )
+
+@onready var hurt_sound = $HurtSound
+@onready var chirp_sound = $ChirpSound
 
 ####################################################
 # INVENTORY
@@ -254,6 +257,33 @@ func _ready():
 		username
 	)
 
+func _process(delta):
+
+	if !is_multiplayer_authority():
+		return
+
+	if shake_strength > 0:
+
+		camera.offset = Vector2(
+			randf_range(
+				-shake_strength,
+				shake_strength
+			),
+			randf_range(
+				-shake_strength,
+				shake_strength
+			)
+		)
+
+		shake_strength = lerp(
+			shake_strength,
+			0.0,
+			10.0 * delta
+		)
+
+	else:
+
+		camera.offset = Vector2.ZERO
 
 ####################################################
 # PHYSICS
@@ -337,6 +367,19 @@ func _physics_process(delta):
 			velocity.y = flap_force
 
 			attack()
+			
+			####################################################
+			# RANDOM CHIRP
+			####################################################
+
+			if randf() < 0.2:
+
+				chirp_sound.pitch_scale = randf_range(
+					0.92,
+					1.08
+				)
+
+				chirp_sound.play()
 
 		move_and_slide()
 		
@@ -883,7 +926,9 @@ func take_damage(
 	####################################################
 	# STORE ATTACKER
 	####################################################
+	if is_multiplayer_authority():
 
+		shake_strength = 5.0
 	last_attacker_peer_id = attacker_peer_id
 
 	print(
@@ -895,9 +940,20 @@ func take_damage(
 	####################################################
 	# APPLY DAMAGE
 	####################################################
-
+	hurt_sound.play()
+	flash_damage()
 	health -= amount
 
+
+func flash_damage():
+
+	anim.modulate = Color(1, 0.4, 0.4)
+
+	await get_tree().create_timer(
+		0.12
+	).timeout
+
+	anim.modulate = Color.WHITE
 @rpc("any_peer")
 func heal(amount):
 

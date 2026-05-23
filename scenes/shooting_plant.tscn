@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://djldf5m1p3wq2" path="res://scripts/shooting_plant.gd" id="1_m2btc"]
 [ext_resource type="Texture2D" uid="uid://bata1p5moj30h" path="res://assets/ShootingPlant(4).png" id="2_m2btc"]
 [ext_resource type="PackedScene" uid="uid://df56jkjem65fg" path="res://scenes/bullet.tscn" id="2_spxi3"]
+[ext_resource type="AudioStream" uid="uid://bg8xqoyvgo53w" path="res://assets/botanguyen-pop-530141.mp3" id="4_64wew"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_spxi3"]
 atlas = ExtResource("2_m2btc")
@@ -443,3 +444,10 @@ shape = SubResource("RectangleShape2D_m2btc")
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=1349537676]
 position = Vector2(0, -22)
+
+[node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=108307146]
+stream = ExtResource("4_64wew")
+volume_db = 8.744
+max_distance = 400.0
+attenuation = 1.5
+bus = &"SFX"

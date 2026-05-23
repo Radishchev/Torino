@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://b5lay31e7mdr" path="res://scenes/eggs/egg_object.tscn" id="2_k8tkd"]
 [ext_resource type="FontFile" uid="uid://nal13tosu7ib" path="res://assets/Fonts/fff-forward/FFFFORWA.TTF" id="4_k8tkd"]
 [ext_resource type="Texture2D" uid="uid://ofuag6ncy3bn" path="res://assets/dagers.png" id="5_jlq18"]
+[ext_resource type="AudioStream" uid="uid://bpdomif1scnqx" path="res://audiomass-output.mp3" id="6_xk3hh"]
+[ext_resource type="AudioStream" uid="uid://cyg3nrkngbu3u" path="res://assets/bird_chirp.mp3" id="7_m4ka2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhqgy"]
 atlas = ExtResource("2_2d20i")
@@ -148,8 +150,11 @@ shape = SubResource("RectangleShape2D_jlq18")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=843217204]
 zoom = Vector2(2, 2)
+limit_left = 0
+limit_top = 0
 limit_right = 1168
 limit_bottom = 656
+limit_smoothed = true
 position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
@@ -217,5 +222,16 @@ collision_mask = 9
 position = Vector2(11, -13)
 rotation = 0.9075712
 shape = SubResource("RectangleShape2D_m4ka2")
+
+[node name="HurtSound" type="AudioStreamPlayer2D" parent="." unique_id=1389869293]
+stream = ExtResource("6_xk3hh")
+max_polyphony = 4
+bus = &"SFX"
+
+[node name="ChirpSound" type="AudioStreamPlayer2D" parent="." unique_id=1493136046]
+stream = ExtResource("7_m4ka2")
+max_distance = 600.0
+attenuation = 1.8
+bus = &"SFX"
 
 [connection signal="area_entered" from="WeaponHolder/KnifeHitbox" to="." method="_on_knife_hitbox_area_entered"]

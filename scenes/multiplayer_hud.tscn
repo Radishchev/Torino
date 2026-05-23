@@ -4,6 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://c0sktf38g8ilt" path="res://assets/heart.png" id="2_v25y6"]
 [ext_resource type="FontFile" uid="uid://nal13tosu7ib" path="res://assets/Fonts/fff-forward/FFFFORWA.TTF" id="3_07v4m"]
 [ext_resource type="Texture2D" uid="uid://d4f18y2o7s661" path="res://assets/Gray_Buttons_Pixel.png" id="3_ybnum"]
+[ext_resource type="Texture2D" uid="uid://dcg0roy0ofuej" path="res://assets/02-1.png(2).png" id="5_eklao"]
+[ext_resource type="Texture2D" uid="uid://cgm6wmn7bis1k" path="res://assets/02-2.png(1).png" id="6_eklao"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_07v4m"]
 atlas = ExtResource("3_ybnum")
@@ -28,14 +30,6 @@ region = Rect2(96, 16, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_6vv8v"]
 atlas = ExtResource("3_ybnum")
 region = Rect2(256, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7pitv"]
-atlas = ExtResource("3_ybnum")
-region = Rect2(80, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vksas"]
-atlas = ExtResource("3_ybnum")
-region = Rect2(240, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ybnum"]
 atlas = ExtResource("3_ybnum")
@@ -165,8 +159,8 @@ action = "flap"
 modulate = Color(1, 1, 1, 0.6156863)
 position = Vector2(1003, 479)
 scale = Vector2(8, 8)
-texture_normal = SubResource("AtlasTexture_7pitv")
-texture_pressed = SubResource("AtlasTexture_vksas")
+texture_normal = ExtResource("5_eklao")
+texture_pressed = ExtResource("6_eklao")
 action = "drop_egg"
 
 [node name="PauseButton" type="TouchScreenButton" parent="." unique_id=135702742]

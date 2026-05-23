@@ -95,6 +95,12 @@ func _on_frame_changed():
 func _spawn_bullet():
 
 	shooting = false
+	
+	$ShootSound.pitch_scale = randf_range(
+		0.96,
+		1.04
+	)
+	$ShootSound.play()
 
 	if bullet_scene:
 
