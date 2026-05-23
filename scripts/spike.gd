@@ -30,11 +30,22 @@ func _ready():
 
 func _on_body_entered(body):
 
-	if !multiplayer.is_server():
-		return
+	####################################################
+	# MULTIPLAYER SERVER ONLY
+	####################################################
+
+	if multiplayer.has_multiplayer_peer():
+
+		if !multiplayer.is_server():
+			return
+
 	if !armed:
 		return
-		
+
+	####################################################
+	# MULTIPLAYER PLAYER
+	####################################################
+
 	if body.has_method("take_damage"):
 
 		var authority = (
@@ -66,3 +77,11 @@ func _on_body_entered(body):
 			)
 
 		return
+
+	####################################################
+	# SINGLEPLAYER PLAYER
+	####################################################
+
+	if body.has_method("die"):
+
+		body.die()

@@ -193,6 +193,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 
 [node name="UsernameLabel" type="Label" parent="UIContainer" unique_id=729910126]
+modulate = Color(1, 1, 1, 0.44313726)
 texture_filter = 2
 layout_mode = 2
 size_flags_horizontal = 10

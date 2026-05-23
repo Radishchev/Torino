@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://ddkhvgtvltfo"]
+
+[ext_resource type="Script" uid="uid://2rmasdwnie65" path="res://scripts/nest.gd" id="1_nest_script"]
+[ext_resource type="Shader" uid="uid://sg24vr8d1hla" path="res://scripts/chroma_key.gdshader" id="2_chroma_shader"]
+[ext_resource type="Texture2D" uid="uid://dopqpu6bvfbct" path="res://assets/nest.jpg" id="3_nest_tex"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nest"]
+shader = ExtResource("2_chroma_shader")
+shader_parameter/key_color = Color(1, 1, 1, 1)
+shader_parameter/similarity = 0.1
+shader_parameter/smoothness = 0.08
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nest"]
+radius = 16.0
+
+[node name="Nest" type="Area2D" unique_id=748922004]
+collision_layer = 128
+collision_mask = 128
+script = ExtResource("1_nest_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1606413584]
+material = SubResource("ShaderMaterial_nest")
+position = Vector2(0, 0.75999975)
+scale = Vector2(0.04, 0.019999998)
+texture = ExtResource("3_nest_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1047510365]
+shape = SubResource("CircleShape2D_nest")

@@ -8,6 +8,7 @@
 script = ExtResource("1_1dciw")
 egg_name = "Respawn Egg"
 icon = ExtResource("1_rd0hb")
+rarity = 3
 landed_effect_scene = ExtResource("2_pkaj7")
 break_velocity_threshold = 600.0
 metadata/_custom_type_script = "uid://bipw3saiu1rri"

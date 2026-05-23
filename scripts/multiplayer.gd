@@ -81,7 +81,7 @@ var egg_pool = [
 # EGG SPAWNING
 ####################################################
 
-var max_world_eggs := 6
+var max_world_eggs := 7
 
 var egg_spawn_interval := 8.0
 

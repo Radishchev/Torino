@@ -18,8 +18,8 @@ func _ready():
 		multiplayer.is_server()
 	)
 
-	match_length_option.disabled = (
-		!multiplayer.is_server()
+	match_length_option.visible = (
+		multiplayer.is_server()
 	)
 
 func _process(_delta):

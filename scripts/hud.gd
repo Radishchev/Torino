@@ -12,6 +12,14 @@ extends CanvasLayer
 
 func _ready():
 	update_feathers_collected(0)
+	
+	if OS.has_feature("mobile"):
+
+		$MobileControls.visible = true
+
+	else:
+
+		$MobileControls.visible = false
 
 
 func update_feathers_collected(collected_count: int):
@@ -51,4 +59,9 @@ func _on_restart_button_pressed():
 
 
 func _on_quite_button_pressed() -> void:
-	get_tree().quit()
+
+	get_tree().paused = false
+
+	get_tree().change_scene_to_file(
+		"res://scenes/Main_Menu.tscn"
+	)

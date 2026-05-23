@@ -113,7 +113,7 @@ func show_room_overview(room_center: Vector2, room_size: Vector2) -> void:
 
 	await tween.finished
 
-	await get_tree().create_timer(0.0).timeout
+	await get_tree().create_timer(8.0).timeout
 
 	var return_tween := create_tween()
 	return_tween.set_parallel(true)

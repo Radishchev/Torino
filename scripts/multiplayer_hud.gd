@@ -5,6 +5,7 @@ extends Control
 ####################################################
 
 var player
+var mobile_controls_enabled := false
 
 ####################################################
 # TEXTURES
@@ -33,6 +34,8 @@ var player
 @onready var leaderboard_panel = $LeaderboardPanel
 
 @onready var death_label = $DeathLabel
+
+@onready var kills_label = $KillsLabel
 ####################################################
 # READY
 ####################################################
@@ -42,13 +45,13 @@ func _ready():
 	
 	update_leaderboard()
 	
-	if OS.has_feature("mobile"):
+	mobile_controls_enabled = (
+		OS.has_feature("mobile")
+	)
 
-		$MobileControls.visible = true
-
-	else:
-
-		$MobileControls.visible = false
+	mobile_controls.visible = (
+		mobile_controls_enabled
+	)
 
 ####################################################
 # PLAYER SETUP
@@ -84,6 +87,27 @@ func _process(delta):
 		"%02d:%02d"
 		% [minutes, seconds]
 	)
+	
+	####################################################
+	# LOCAL PLAYER KILLS
+	####################################################
+
+	if multiplayer.has_multiplayer_peer():
+
+		var local_id = (
+			multiplayer.get_unique_id()
+		)
+
+		var kills = (
+			NetworkManager.player_kills.get(
+				local_id,
+				0
+			)
+		)
+
+		kills_label.text = (
+			"Kills: " + str(kills)
+		)
 ####################################################
 # HEARTS
 ####################################################
@@ -324,7 +348,9 @@ func close_pause_menu():
 
 	egg_container.visible = true
 
-	mobile_controls.visible = true
+	mobile_controls.visible = (
+		mobile_controls_enabled
+	)
 
 	$PauseButton.visible = true
 

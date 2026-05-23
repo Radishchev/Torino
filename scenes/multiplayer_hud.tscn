@@ -65,9 +65,10 @@ heart_texture = ExtResource("2_v25y6")
 
 [node name="HeartsContainer" type="HBoxContainer" parent="." unique_id=256409680]
 layout_mode = 1
-offset_top = -31.0
-offset_right = 171.0
-offset_bottom = 75.0
+offset_left = -1.0
+offset_top = 31.0
+offset_right = 170.0
+offset_bottom = 137.0
 
 [node name="EggContainer" type="HBoxContainer" parent="." unique_id=212414156]
 clip_contents = true
@@ -76,10 +77,10 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = -8.0
-offset_top = -274.0
-offset_right = 32.0
-offset_bottom = -234.0
+offset_left = -9.0
+offset_top = -212.0
+offset_right = 31.0
+offset_bottom = -172.0
 grow_vertical = 2
 theme_override_constants/separation = -13
 
@@ -100,6 +101,7 @@ text = "You Died"
 horizontal_alignment = 1
 
 [node name="DebugLabel" type="Label" parent="." unique_id=71378409]
+visible = false
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
@@ -226,6 +228,16 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="KillsLabel" type="Label" parent="." unique_id=263101071]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 17.0
+offset_right = 87.0
+offset_bottom = 50.0
+theme_override_fonts/font = ExtResource("3_07v4m")
+theme_override_font_sizes/font_size = 24
+text = "Kills"
 
 [connection signal="pressed" from="PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="released" from="PauseMenu/VBoxContainer/ResumeButton" to="." method="_on_resume_button_released"]
