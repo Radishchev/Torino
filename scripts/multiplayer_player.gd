@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
 
-####################################################
+
 # MOVEMENT
-####################################################
+
 
 @export var gravity := 900.0
 @export var flap_force := -300.0
@@ -18,9 +18,9 @@ var default_camera_zoom := Vector2.ONE
 
 var spectate_zoom := Vector2(3.4, 3.4)
 
-####################################################
+
 # ANIMATION
-####################################################
+
 
 @export var idle_anim_name := "idle"
 @export var fly_anim_name := "flying"
@@ -35,9 +35,9 @@ const VY_THRESHOLD := 20.0
 var air_time := 0.0
 
 var shake_strength := 0.0
-####################################################
+
 # NODES
-####################################################
+
 
 @onready var camera = $Camera2D
 @onready var username_label = $UIContainer/UsernameLabel
@@ -55,9 +55,9 @@ var shake_strength := 0.0
 @onready var hurt_sound = $HurtSound
 @onready var chirp_sound = $ChirpSound
 
-####################################################
+
 # INVENTORY
-####################################################
+
 @export var egg_object_scene : PackedScene
 
 var egg_stack : Array[EggData] = []
@@ -71,9 +71,9 @@ var respawn_egg_position := Vector2.ZERO
 @export var has_dagger := false
 var dagger_timer_id := 0
 
-####################################################
+
 # USERNAME
-####################################################
+
 
 @export var username := "Player":
 	set(value):
@@ -85,9 +85,9 @@ var dagger_timer_id := 0
 			username_label.text = value
 
 
-####################################################
+
 # HEALTH
-####################################################
+
 
 var is_dead := false
 
@@ -122,9 +122,9 @@ var is_invincible := false
 
 		health = clamp(value, 0, max_health)
 
-		####################################################
+		
 		# LOCAL HUD HEARTS
-		####################################################
+		
 
 		if is_multiplayer_authority():
 
@@ -140,15 +140,15 @@ var is_invincible := false
 					max_health
 				)
 
-		####################################################
+		
 		# WORLD HEARTS
-		####################################################
+		
 
 		update_world_hearts()
 
-		####################################################
+		
 		# DEATH
-		####################################################
+		
 
 		if health <= 0 and !is_dead:
 			if is_multiplayer_authority():
@@ -191,9 +191,9 @@ func update_world_hearts():
 		world_hearts.add_child(heart)
 
 		
-####################################################
+
 # READY
-####################################################
+
 
 func _ready():
 
@@ -285,22 +285,22 @@ func _process(delta):
 
 		camera.offset = Vector2.ZERO
 
-####################################################
+
 # PHYSICS
-####################################################
+
 
 func _physics_process(delta):
 
-	####################################################
+	
 	# SAFETY CHECK
-	####################################################
+	
 
 	if multiplayer.multiplayer_peer == null:
 		return
 
-	####################################################
+	
 	# MATCH FINISHED
-	####################################################
+	
 
 	var level = (
 		get_tree()
@@ -310,21 +310,21 @@ func _physics_process(delta):
 	if level and level.match_finished:
 		return
 
-	####################################################
+	
 	# LOCAL PLAYER MOVEMENT
-	####################################################
+	
 
 
-	####################################################
+	
 	# LOCAL PLAYER MOVEMENT
-	####################################################
+	
 	
 	weapon_holder.visible = has_dagger
 	knife_hitbox.monitoring = has_dagger
 	if is_multiplayer_authority():
-		####################################################
+		
 		# DEAD PLAYERS CANNOT CONTROL
-		####################################################
+		
 
 		if is_dead:
 			return
@@ -368,9 +368,9 @@ func _physics_process(delta):
 
 			attack()
 			
-			####################################################
+			
 			# RANDOM CHIRP
-			####################################################
+			
 
 			if randf() < 0.2:
 
@@ -390,9 +390,9 @@ func _physics_process(delta):
 
 			throw_egg()
 			
-		####################################################
+		
 		# UPDATE SYNC VARIABLES
-		####################################################
+		
 
 		if direction > 0:
 
@@ -423,9 +423,9 @@ func _physics_process(delta):
 
 			current_anim = idle_anim_name
 
-	####################################################
+	
 	# VISUALS (RUNS FOR EVERYONE)
-	####################################################
+	
 	
 	weapon_holder.visible = has_dagger
 	knife_hitbox.monitoring = has_dagger
@@ -459,18 +459,18 @@ func _physics_process(delta):
 	)
 	
 	
-####################################################
+
 # DAMAGE / COMBAT
-####################################################
+
 
 func die():
 
 	if is_dead:
 		return
 
-	####################################################
+	
 	# RESPAWN EGG
-	####################################################
+	
 
 	if has_respawn_egg:
 
@@ -482,9 +482,9 @@ func die():
 				respawn_egg_position
 			)
 
-			####################################################
+			
 			# CONSUME EGG
-			####################################################
+			
 
 			if multiplayer.is_server():
 
@@ -492,17 +492,17 @@ func die():
 
 			clear_respawn_egg.rpc()
 
-			####################################################
+			
 			# REMOVE TEMP EFFECTS
-			####################################################
+			
 
 			has_dagger = false
 			knife_hitbox.monitoring = false
 			weapon_holder.visible = false
 
-			####################################################
+			
 			# RESPAWN
-			####################################################
+			
 
 			is_dead = true
 
@@ -517,9 +517,9 @@ func die():
 
 	is_dead = true
 
-	####################################################
+	
 	# SHOW LEADERBOARD
-	####################################################
+	
 
 	if is_multiplayer_authority():
 
@@ -534,29 +534,29 @@ func die():
 
 		spectate_killer()
 
-	####################################################
+	
 	# SYNCHRONIZED VISIBILITY
-	####################################################
+	
 
 	blink_visible = false
 
-	####################################################
+	
 	# REMOVE TEMP EFFECTS
-	####################################################
+	
 
 	has_dagger = false
 
 	knife_hitbox.monitoring = false
 
-	####################################################
+	
 	# AWARD KILL
-	####################################################
+	
 
 	if last_attacker_peer_id != -1:
 
-		####################################################
+		
 		# SELF KILL
-		####################################################
+		
 
 		if (
 			last_attacker_peer_id
@@ -568,9 +568,9 @@ func die():
 				last_attacker_peer_id
 			)
 
-		####################################################
+		
 		# NORMAL KILL
-		####################################################
+		
 
 		else:
 
@@ -585,9 +585,9 @@ func die():
 		last_attacker_peer_id
 	)
 
-	####################################################
+	
 	# CLEAR INVENTORY
-	####################################################
+	
 
 	egg_stack.clear()
 
@@ -596,21 +596,21 @@ func die():
 		get_inventory_paths()
 	)
 
-	####################################################
+	
 	# DISABLE COLLISIONS
-	####################################################
+	
 
 	collision.disabled = true
 
-	####################################################
+	
 	# HIDE LOCAL HEARTS
-	####################################################
+	
 
 	world_hearts.visible = false
 
-	####################################################
+	
 	# RESPAWN TIMER
-	####################################################
+	
 
 	respawn()
 	
@@ -628,9 +628,9 @@ func respawn(
 			respawn_time
 		).timeout
 
-	####################################################
+	
 	# FIND LEVEL
-	####################################################
+	
 
 	var level = (
 		get_tree()
@@ -640,9 +640,9 @@ func respawn(
 	if level == null:
 		return
 
-	####################################################
+	
 	# RESPAWN POSITION
-	####################################################
+	
 
 	if use_custom_position:
 
@@ -663,9 +663,9 @@ func respawn(
 	
 	camera.global_position = global_position
 
-	####################################################
+	
 	# RESET HEALTH
-	####################################################
+	
 
 	if respawn_health == -1:
 
@@ -677,9 +677,9 @@ func respawn(
 
 	is_dead = false
 	
-	####################################################
+	
 	# RESET TEMP EFFECTS
-	####################################################
+	
 
 	has_dagger = false
 
@@ -687,17 +687,17 @@ func respawn(
 
 	knife_hitbox.monitoring = false
 	
-	####################################################
+	
 	# STOP SPECTATING
-	####################################################
+	
 
 	spectating = false
 
 	camera.zoom = default_camera_zoom
 	
-	####################################################
+	
 	# HIDE LEADERBOARD
-	####################################################
+	
 
 	if is_multiplayer_authority():
 
@@ -710,15 +710,15 @@ func respawn(
 
 			hud.hide_leaderboard()
 
-	####################################################
+	
 	# RESTORE COLLISIONS
-	####################################################
+	
 
 	collision.disabled = false
 
-	####################################################
+	
 	# TEMP INVINCIBILITY
-	####################################################
+	
 
 	is_invincible = true
 
@@ -728,9 +728,9 @@ func respawn(
 
 	while elapsed < invincible_time:
 
-		####################################################
+		
 		# BLINK SPEED INCREASES OVER TIME
-		####################################################
+		
 
 		var progress = (
 			elapsed / invincible_time
@@ -742,9 +742,9 @@ func respawn(
 			progress
 		)
 
-		####################################################
+		
 		# TOGGLE VISIBILITY
-		####################################################
+		
 
 		blink_visible = !blink_visible
 		
@@ -756,9 +756,9 @@ func respawn(
 
 		elapsed += blink_interval
 
-	####################################################
+	
 	# FINAL VISIBLE STATE
-	####################################################
+	
 
 	anim.visible = true
 
@@ -768,9 +768,9 @@ func respawn(
 
 		world_hearts.visible = true
 
-	####################################################
+	
 	# END INVINCIBILITY
-	####################################################
+	
 
 	is_invincible = false
 	
@@ -860,15 +860,15 @@ func dagger_attack():
 @rpc("any_peer", "call_local")
 func activate_dagger(duration := 3.0):
 
-	####################################################
+	
 	# ENABLE DAGGER
-	####################################################
+	
 
 	has_dagger = true
 
-	####################################################
+	
 	# UNIQUE TIMER ID
-	####################################################
+	
 
 	dagger_timer_id += 1
 
@@ -879,31 +879,31 @@ func activate_dagger(duration := 3.0):
 		" activated dagger"
 	)
 
-	####################################################
+	
 	# WAIT
-	####################################################
+	
 
 	await get_tree().create_timer(
 		duration
 	).timeout
 
-	####################################################
+	
 	# NEWER DAGGER ACTIVATED
-	####################################################
+	
 
 	if current_timer != dagger_timer_id:
 		return
 
-	####################################################
+	
 	# PLAYER MAY HAVE DIED
-	####################################################
+	
 
 	if is_dead:
 		return
 
-	####################################################
+	
 	# REMOVE DAGGER
-	####################################################
+	
 
 	has_dagger = false
 
@@ -923,9 +923,9 @@ func take_damage(
 
 	if is_invincible:
 		return
-	####################################################
+	
 	# STORE ATTACKER
-	####################################################
+	
 	if is_multiplayer_authority():
 
 		shake_strength = 5.0
@@ -937,9 +937,9 @@ func take_damage(
 		last_attacker_peer_id
 	)
 
-	####################################################
+	
 	# APPLY DAMAGE
-	####################################################
+	
 	hurt_sound.play()
 	flash_damage()
 	health -= amount
@@ -959,9 +959,9 @@ func heal(amount):
 
 	health += amount
 
-####################################################
+
 # INVENTORY
-####################################################
+
 
 func get_inventory_paths():
 
@@ -979,9 +979,9 @@ func get_inventory_paths():
 @rpc("any_peer", "call_local")
 func sync_inventory(paths : Array):
 
-	####################################################
+	
 	# REBUILD LOCAL INVENTORY
-	####################################################
+	
 
 	egg_stack.clear()
 
@@ -993,9 +993,9 @@ func sync_inventory(paths : Array):
 
 			egg_stack.push_back(egg_data)
 
-	####################################################
+	
 	# UPDATE HUD
-	####################################################
+	
 
 	if is_multiplayer_authority():
 
@@ -1022,24 +1022,24 @@ func add_egg(egg : EggData):
 
 		return false
 
-	####################################################
+	
 	# SERVER INVENTORY
-	####################################################
+	
 
 	egg_stack.push_back(egg)
 
-	####################################################
+	
 	# SYNC TO OWNER
-	####################################################
+	
 
 	sync_inventory.rpc_id(
 		get_multiplayer_authority(),
 		get_inventory_paths()
 	)
 
-	####################################################
+	
 	# DEBUG
-	####################################################
+	
 
 	print(
 		username,
@@ -1058,9 +1058,9 @@ func add_egg(egg : EggData):
 @rpc("any_peer")
 func request_remove_egg():
 
-	####################################################
+	
 	# ONLY SERVER MODIFIES TRUE INVENTORY
-	####################################################
+	
 
 	if !multiplayer.is_server():
 		return
@@ -1068,15 +1068,15 @@ func request_remove_egg():
 	if egg_stack.is_empty():
 		return
 
-	####################################################
+	
 	# REMOVE SERVER EGG
-	####################################################
+	
 
 	egg_stack.pop_back()
 
-	####################################################
+	
 	# RESYNC CLIENT
-	####################################################
+	
 
 	sync_inventory.rpc_id(
 		get_multiplayer_authority(),
@@ -1084,9 +1084,9 @@ func request_remove_egg():
 	)
 
 
-####################################################
+
 # THROW EGG
-####################################################
+
 
 func throw_egg():
 	
@@ -1098,23 +1098,23 @@ func throw_egg():
 		print("No eggs")
 		return
 
-	####################################################
+	
 	# LOCAL PREDICTION
-	####################################################
+	
 
 	var egg_data = egg_stack.pop_back()
 
-	####################################################
+	
 	# CLIENT REQUESTS SERVER REMOVAL
-	####################################################
+	
 
 	if !multiplayer.is_server():
 
 		request_remove_egg.rpc_id(1)
 
-	####################################################
+	
 	# LOCAL HUD UPDATE
-	####################################################
+	
 
 	if is_multiplayer_authority():
 
@@ -1130,9 +1130,9 @@ func throw_egg():
 		"Throwing egg as peer:",
 		multiplayer.get_unique_id()
 	)
-	####################################################
+	
 	# MOVEMENT DATA
-	####################################################
+	
 
 	var current_velocity = velocity
 
@@ -1146,9 +1146,9 @@ func throw_egg():
 		1.0
 	)
 
-	####################################################
+	
 	# THROW DIRECTION
-	####################################################
+	
 
 	var throw_vector := Vector2.ZERO
 
@@ -1168,9 +1168,9 @@ func throw_egg():
 
 			throw_vector = Vector2.LEFT
 
-	####################################################
+	
 	# THROW VELOCITY
-	####################################################
+	
 
 	var directional_boost = (
 		throw_vector
@@ -1178,9 +1178,9 @@ func throw_egg():
 		* speed_ratio
 	)
 	
-	####################################################
+	
 	# REMOVE DOWNWARD MOMENTUM
-	####################################################
+	
 
 	if current_velocity.y > 0:
 
@@ -1191,18 +1191,18 @@ func throw_egg():
 		+ directional_boost
 	)
 
-	####################################################
+	
 	# THROW POSITION
-	####################################################
+	
 
 	var spawn_position = (
 		global_position
 		+ (throw_vector * 20.0)
 	)
 
-	####################################################
+	
 	# HOST SPAWNS DIRECTLY
-	####################################################
+	
 
 	if multiplayer.is_server():
 
@@ -1213,9 +1213,9 @@ func throw_egg():
 			multiplayer.get_unique_id()
 		)
 
-	####################################################
+	
 	# CLIENT REQUESTS SERVER
-	####################################################
+	
 
 	else:
 
@@ -1227,9 +1227,9 @@ func throw_egg():
 			multiplayer.get_unique_id()
 		)
 
-	####################################################
+	
 	# DEBUG
-	####################################################
+	
 
 	print(
 		username,
@@ -1238,9 +1238,9 @@ func throw_egg():
 	)
 
 
-####################################################
+
 # NETWORK THROW
-####################################################
+
 
 @rpc("any_peer")
 func request_throw_egg(
@@ -1250,9 +1250,9 @@ func request_throw_egg(
 	owner_peer_id : int
 ):
 
-	####################################################
+	
 	# ONLY SERVER SPAWNS
-	####################################################
+	
 	print(
 		"Server received throw request from:",
 		owner_peer_id
@@ -1265,9 +1265,9 @@ func request_throw_egg(
 	if egg_data == null:
 		return
 
-	####################################################
+	
 	# GET LEVEL
-	####################################################
+	
 
 	var level = (
 		get_tree()
@@ -1277,9 +1277,9 @@ func request_throw_egg(
 	if level == null:
 		return
 
-	####################################################
+	
 	# USE NETWORK SPAWNER
-	####################################################
+	
 
 	level.spawn_egg(
 		egg_data,
@@ -1288,9 +1288,9 @@ func request_throw_egg(
 		owner_peer_id
 	)
 
-####################################################
+
 # UTIL
-####################################################
+
 
 func remap(
 	value,
@@ -1312,9 +1312,9 @@ func spectate_killer():
 	if last_attacker_peer_id == -1:
 		return
 
-	####################################################
+	
 	# FIND KILLER
-	####################################################
+	
 
 	var level = (
 		get_tree()
@@ -1333,15 +1333,15 @@ func spectate_killer():
 
 	spectating = true
 
-	####################################################
+	
 	# CAMERA ZOOM
-	####################################################
+	
 
 	camera.zoom = spectate_zoom
 
-	####################################################
+	
 	# FOLLOW LOOP
-	####################################################
+	
 
 	while spectating and is_dead:
 

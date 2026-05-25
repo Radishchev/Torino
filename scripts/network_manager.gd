@@ -7,9 +7,9 @@ const DISCOVERY_PORT = 9998
 
 var peer = ENetMultiplayerPeer.new()
 
-####################################################
+
 # LAN DISCOVERY
-####################################################
+
 
 var udp_server := PacketPeerUDP.new()
 var udp_listener := PacketPeerUDP.new()
@@ -17,22 +17,22 @@ var udp_listener := PacketPeerUDP.new()
 var discovered_games := {}
 var discovery_running := false
 
-####################################################
+
 # LOCAL PLAYER DATA
-####################################################
+
 
 var player_username := ""
 
-####################################################
+
 # SERVER STORED USERNAMES
-####################################################
+
 
 var lobby_players := {}
 var player_usernames := {}
 
-####################################################
+
 # RANDOM USERNAME PARTS
-####################################################
+
 
 var random_first = [
 	"Bubble",
@@ -74,15 +74,15 @@ var match_duration := 300
 
 var current_match_time := 0
 
-####################################################
+
 # LEADERBOARD
-####################################################
+
 
 var player_kills := {}
 
-####################################################
+
 # READY
-####################################################
+
 
 func _ready():
 
@@ -99,9 +99,9 @@ func sync_match_time(time_left):
 	current_match_time = time_left
 	
 	
-####################################################
+
 # KILLS
-####################################################
+
 
 func add_kill(peer_id):
 
@@ -160,9 +160,9 @@ func request_remove_kill(peer_id):
 
 	remove_kill(peer_id)
 
-####################################################
+
 # USERNAME
-####################################################
+
 
 func generate_random_username():
 
@@ -171,15 +171,15 @@ func generate_random_username():
 		+ random_second.pick_random()
 	)
 
-####################################################
+
 # HOST GAME
-####################################################
+
 
 func host_game():
 
-	####################################################
+	
 	# RESET PEER
-	####################################################
+	
 
 	peer = ENetMultiplayerPeer.new()
 
@@ -192,9 +192,9 @@ func host_game():
 
 	multiplayer.multiplayer_peer = peer
 
-	####################################################
+	
 	# STORE HOST
-	####################################################
+	
 
 	var host_id = (
 		multiplayer.get_unique_id()
@@ -210,30 +210,30 @@ func host_game():
 
 	player_kills[host_id] = 0
 
-	####################################################
+	
 	# SYNC
-	####################################################
+	
 
 	broadcast_leaderboard()
 	broadcast_lobby()
 
 	print("Server created")
 
-	####################################################
+	
 	# LAN BROADCAST
-	####################################################
+	
 
 	start_lan_broadcast()
 
-####################################################
+
 # JOIN GAME
-####################################################
+
 
 func join_game(ip = "127.0.0.1"):
 
-	####################################################
+	
 	# RESET PEER
-	####################################################
+	
 
 	peer = ENetMultiplayerPeer.new()
 
@@ -258,9 +258,9 @@ func join_game(ip = "127.0.0.1"):
 		player_username
 	)
 
-####################################################
+
 # LAN BROADCAST
-####################################################
+
 
 func start_lan_broadcast():
 
@@ -271,9 +271,9 @@ func start_lan_broadcast():
 		and multiplayer.is_server()
 	):
 
-		####################################################
+		
 		# VALID PEER
-		####################################################
+		
 
 		var current_peer = (
 			multiplayer.multiplayer_peer
@@ -282,16 +282,16 @@ func start_lan_broadcast():
 		if current_peer == null:
 			break
 
-		####################################################
+		
 		# MUST STILL BE HOST
-		####################################################
+		
 
 		if current_peer != peer:
 			break
 
-		####################################################
+		
 		# SEND BROADCAST
-		####################################################
+		
 
 		var message = JSON.stringify({
 			"name": player_username,
@@ -313,9 +313,9 @@ func start_lan_broadcast():
 
 	print("Stopped LAN broadcast")
 
-####################################################
+
 # LAN DISCOVERY
-####################################################
+
 
 func start_lan_discovery():
 
@@ -324,9 +324,9 @@ func start_lan_discovery():
 
 	discovery_running = true
 
-	####################################################
+	
 	# CLEAN OLD LISTENER
-	####################################################
+	
 
 	udp_listener.close()
 
@@ -375,9 +375,9 @@ func start_lan_discovery():
 
 			lan_games_updated.emit()
 
-####################################################
+
 # USERNAME SYNC
-####################################################
+
 
 @rpc("any_peer")
 func send_username(username):
@@ -404,9 +404,9 @@ func send_username(username):
 		username
 	)
 
-####################################################
+
 # LEADERBOARD
-####################################################
+
 
 func broadcast_leaderboard():
 
@@ -446,9 +446,9 @@ func sync_leaderboard_data(
 
 		hud.update_leaderboard()
 
-####################################################
+
 # LOBBY
-####################################################
+
 
 @rpc("authority", "call_local")
 func sync_lobby_players(players : Dictionary):
@@ -476,9 +476,9 @@ func broadcast_lobby():
 		lobby_players
 	)
 
-####################################################
+
 # START MATCH
-####################################################
+
 
 @rpc("authority", "call_local")
 func start_match():
@@ -487,9 +487,9 @@ func start_match():
 		"res://scenes/multiplayer.tscn"
 	)
 
-####################################################
+
 # DISCONNECT HANDLING
-####################################################
+
 
 func setup_disconnect_handler():
 
@@ -501,9 +501,9 @@ func _on_server_disconnected():
 
 	print("Disconnected from host")
 
-	####################################################
+	
 	# CLEAN MULTIPLAYER
-	####################################################
+	
 
 	if multiplayer.multiplayer_peer:
 
@@ -511,18 +511,18 @@ func _on_server_disconnected():
 
 	multiplayer.multiplayer_peer = null
 
-	####################################################
+	
 	# CLEAR DATA
-	####################################################
+	
 
 	lobby_players.clear()
 	player_usernames.clear()
 	player_kills.clear()
 	discovered_games.clear()
 
-	####################################################
+	
 	# RETURN TO MENU
-	####################################################
+	
 
 	get_tree().change_scene_to_file(
 		"res://scenes/multiplayer_menu.tscn"
@@ -535,9 +535,9 @@ func _on_peer_disconnected(peer_id):
 		peer_id
 	)
 
-	####################################################
+	
 	# REMOVE DATA
-	####################################################
+	
 
 	lobby_players.erase(peer_id)
 
@@ -545,16 +545,16 @@ func _on_peer_disconnected(peer_id):
 
 	player_kills.erase(peer_id)
 
-	####################################################
+	
 	# SYNC
-	####################################################
+	
 
 	broadcast_lobby()
 	broadcast_leaderboard()
 
-	####################################################
+	
 	# REMOVE PLAYER NODE
-	####################################################
+	
 
 	var level = (
 		get_tree()

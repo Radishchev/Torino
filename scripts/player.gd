@@ -131,9 +131,9 @@ func _input(event):
 		die()
 
 
-####################################################
+
 ###        FEATHER SIGNAL HANDLER                ###
-####################################################
+
 
 func _on_feather_collected():
 	feather_count += 1
@@ -142,9 +142,9 @@ func _on_feather_collected():
 	print("Feathers:", feather_count)
 
 
-####################################################
+
 ###                DROP EGG                      ###
-####################################################
+
 
 func drop_egg():
 	if eggs_used >= max_eggs_per_level:
@@ -169,9 +169,9 @@ func drop_egg():
 		hud.update_eggs_remaining(max_eggs_per_level - eggs_used)
 
 
-####################################################
+
 ###                DEATH LOGIC                   ###
-####################################################
+
 
 func die() -> void:
 	print("💀 Player crashed!")
@@ -192,9 +192,9 @@ func die() -> void:
 		get_tree().call_deferred("reload_current_scene")
 
 
-####################################################
+
 ###          EGG SIGNAL HANDLERS                 ###
-####################################################
+
 
 func _on_egg_landed(egg):
 	egg.was_finalized = true
@@ -209,9 +209,9 @@ func _on_egg_broken(egg):
 	egg_stack.erase(egg)
 
 
-####################################################
+
 ###                RESPAWN LOGIC                 ###
-####################################################
+
 
 func respawn_at_spawn_point():
 	global_position = spawn_point
@@ -223,9 +223,9 @@ func remap(value, in_min, in_max, out_min, out_max) -> float:
 	return lerp(out_min, out_max, (value - in_min) / (in_max - in_min))
 
 
-####################################################
+
 ###              ROOM DETECTOR                   ###
-####################################################
+
 
 # RoomDetector callback: called when RoomDetector Area2D enters a Room Area2D
 func _on_room_detector_area_entered(area: Area2D) -> void:

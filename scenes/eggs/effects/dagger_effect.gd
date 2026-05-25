@@ -6,9 +6,9 @@ func activate(egg, direction):
 
 	print("Dagger effect activated")
 
-	####################################################
+	
 	# GET LEVEL
-	####################################################
+	
 
 	var level = (
 		egg.get_tree()
@@ -18,9 +18,9 @@ func activate(egg, direction):
 	if level == null:
 		return
 
-	####################################################
+	
 	# FIND PLAYER
-	####################################################
+	
 
 	var player = (
 		level.players.get_node_or_null(
@@ -36,9 +36,9 @@ func activate(egg, direction):
 		player.username
 	)
 
-	####################################################
+	
 	# ACTIVATE DAGGER
-	####################################################
+	
 
 	if (
 		player.get_multiplayer_authority()

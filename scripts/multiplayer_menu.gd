@@ -7,9 +7,9 @@ var known_games := []
 
 func _ready():
 
-	####################################################
+	
 	# CONNECT SIGNAL
-	####################################################
+	
 
 	if !NetworkManager.lan_games_updated.is_connected(
 		refresh_games
@@ -18,31 +18,31 @@ func _ready():
 			refresh_games
 		)
 
-	####################################################
+	
 	# START DISCOVERY
-	####################################################
+	
 
 	NetworkManager.call_deferred(
 		"start_lan_discovery"
 	)
 
-####################################################
+
 # REFRESH SERVER LIST
-####################################################
+
 
 func refresh_games():
 
-	####################################################
+	
 	# CLEAR OLD BUTTONS
-	####################################################
+	
 	print("Refreshing games UI")
 	for child in games_container.get_children():
 
 		child.queue_free()
 
-	####################################################
+	
 	# REBUILD
-	####################################################
+	
 
 	for ip in NetworkManager.discovered_games:
 		print("Creating button for ", ip)
@@ -91,9 +91,9 @@ func refresh_games():
 
 		games_container.add_child(button)
 
-####################################################
+
 # PROCESS
-####################################################
+
 
 #func _process(_delta):
 #
@@ -108,9 +108,9 @@ func refresh_games():
 #
 		#refresh_games()
 
-####################################################
+
 # HOST BUTTON
-####################################################
+
 
 func _on_host_button_pressed():
 
@@ -133,9 +133,9 @@ func _on_host_button_pressed():
 		"res://scenes/lobby.tscn"
 	)
 
-####################################################
+
 # BACK BUTTON
-####################################################
+
 
 func _on_back_button_pressed():
 

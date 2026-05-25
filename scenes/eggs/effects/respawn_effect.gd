@@ -2,16 +2,16 @@ extends EggEffect
 
 func activate(egg, _direction):
 
-	####################################################
+	
 	# SERVER ONLY
-	####################################################
+	
 
 	if !multiplayer.is_server():
 		return
 
-	####################################################
+	
 	# GET LEVEL
-	####################################################
+	
 
 	var level = (
 		egg.get_tree()
@@ -21,9 +21,9 @@ func activate(egg, _direction):
 	if level == null:
 		return
 
-	####################################################
+	
 	# FIND PLAYER
-	####################################################
+	
 
 	var player = (
 		level.players.get_node_or_null(
@@ -34,9 +34,9 @@ func activate(egg, _direction):
 	if player == null:
 		return
 
-	####################################################
+	
 	# SET RESPAWN EGG
-	####################################################
+	
 
 	player.set_respawn_egg.rpc_id(
 		player.get_multiplayer_authority(),

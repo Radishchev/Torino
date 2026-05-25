@@ -44,9 +44,9 @@ func _on_body_entered(_rid, _body, _body_shape, _local_shape):
 		call_deferred("land_egg_safe")
 
 
-###############################################################
+###########
 ### SAFE LAND LOGIC (executed deferred)
-###############################################################
+###########
 
 func land_egg_safe():
 	if used:
@@ -64,9 +64,9 @@ func land_egg_safe():
 	emit_signal("egg_landed", self)
 
 
-###############################################################
+###########
 ### SAFE BREAK LOGIC (executed deferred)
-###############################################################
+###########
 
 func break_egg_safe():
 	if used:
@@ -95,9 +95,9 @@ func break_egg_safe():
 	call_deferred("queue_free")
 
 
-###############################################################
+###########
 ### Optional: Visual indicator when used
-###############################################################
+###########
 
 func mark_as_checkpoint():
 	if not used:

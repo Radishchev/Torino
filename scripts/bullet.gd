@@ -7,9 +7,9 @@ var direction := Vector2.ZERO
 @onready var anim = $AnimatedSprite2D
 @onready var hitbox = $CollisionShape2D
 
-####################################################
+
 # MULTIPLAYER
-####################################################
+
 
 var owner_peer_id := -1
 
@@ -50,9 +50,9 @@ func _physics_process(delta):
 
 	move_and_slide()
 
-	####################################################
+	
 	# DETECT COLLISIONS
-	####################################################
+	
 
 	for i in get_slide_collision_count():
 
@@ -63,17 +63,17 @@ func _physics_process(delta):
 		if collider == null:
 			continue
 
-		####################################################
+		
 		# MULTIPLAYER PLAYER
-		####################################################
+		
 
 		if collider.has_method("take_damage"):
 
 			hit_something = true
 
-			####################################################
+			
 			# CLIENT VISUAL BULLET
-			####################################################
+			
 
 			if multiplayer.has_multiplayer_peer():
 
@@ -82,17 +82,17 @@ func _physics_process(delta):
 					queue_free()
 					return
 
-			####################################################
+			
 			# SERVER DAMAGE
-			####################################################
+			
 
 			var authority = (
 				collider.get_multiplayer_authority()
 			)
 
-			####################################################
+			
 			# HOST
-			####################################################
+			
 
 			if authority == multiplayer.get_unique_id():
 
@@ -101,9 +101,9 @@ func _physics_process(delta):
 					owner_peer_id
 				)
 
-			####################################################
+			
 			# CLIENT
-			####################################################
+			
 
 			else:
 
@@ -116,9 +116,9 @@ func _physics_process(delta):
 			queue_free()
 			return
 
-		####################################################
+		
 		# SINGLEPLAYER PLAYER
-		####################################################
+		
 
 		if collider.has_method("die"):
 
@@ -129,9 +129,9 @@ func _physics_process(delta):
 			queue_free()
 			return
 
-		####################################################
+		
 		# HIT WALL
-		####################################################
+		
 
 		hit_something = true
 

@@ -2,16 +2,16 @@ extends EggEffect
 
 func activate(egg, direction):
 
-	####################################################
+	
 	# SERVER ONLY
-	####################################################
+	
 
 	if !multiplayer.is_server():
 		return
 
-	####################################################
+	
 	# GET LEVEL
-	####################################################
+	
 
 	var level = (
 		egg.get_tree()
@@ -21,9 +21,9 @@ func activate(egg, direction):
 	if level == null:
 		return
 
-	####################################################
+	
 	# NETWORK SPAWN SPIKE
-	####################################################
+	
 
 	level.spawn_spike(
 		egg.global_position,

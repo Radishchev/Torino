@@ -1,21 +1,21 @@
 extends Control
 
-####################################################
+
 # PLAYER
-####################################################
+
 
 var player
 var mobile_controls_enabled := false
 
-####################################################
+
 # TEXTURES
-####################################################
+
 
 @export var heart_texture : Texture2D
 
-####################################################
+
 # NODES
-####################################################
+
 
 @onready var hearts_container = $HeartsContainer
 
@@ -36,9 +36,9 @@ var mobile_controls_enabled := false
 @onready var death_label = $DeathLabel
 
 @onready var kills_label = $KillsLabel
-####################################################
+
 # READY
-####################################################
+
 
 func _ready():
 	leaderboard_panel.visible = false
@@ -53,9 +53,9 @@ func _ready():
 		mobile_controls_enabled
 	)
 
-####################################################
+
 # PLAYER SETUP
-####################################################
+
 
 func set_player(p):
 
@@ -63,9 +63,9 @@ func set_player(p):
 
 	print("HUD connected to:", player.name)
 
-####################################################
+
 # DEBUG
-####################################################
+
 
 func _process(delta):
 
@@ -88,9 +88,9 @@ func _process(delta):
 		% [minutes, seconds]
 	)
 	
-	####################################################
+	
 	# LOCAL PLAYER KILLS
-	####################################################
+	
 
 	if multiplayer.has_multiplayer_peer():
 
@@ -108,23 +108,23 @@ func _process(delta):
 		kills_label.text = (
 			"Kills: " + str(kills)
 		)
-####################################################
+
 # HEARTS
-####################################################
+
 
 func update_hearts(current, maximum):
 
-	####################################################
+	
 	# REMOVE OLD HEARTS
-	####################################################
+	
 
 	for child in hearts_container.get_children():
 
 		child.queue_free()
 
-	####################################################
+	
 	# CREATE HEARTS
-	####################################################
+	
 
 	for i in range(maximum):
 
@@ -132,9 +132,9 @@ func update_hearts(current, maximum):
 
 		heart.texture = heart_texture
 
-		####################################################
+		
 		# HEART SIZE
-		####################################################
+		
 
 		heart.custom_minimum_size = Vector2(42, 42)
 
@@ -146,9 +146,9 @@ func update_hearts(current, maximum):
 			TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		)
 
-		####################################################
+		
 		# EMPTY HEARTS
-		####################################################
+		
 
 		if i >= current:
 
@@ -156,23 +156,23 @@ func update_hearts(current, maximum):
 
 		hearts_container.add_child(heart)
 
-####################################################
+
 # EGGS
-####################################################
+
 
 func update_eggs(egg_stack):
 
-	####################################################
+	
 	# CLEAR OLD ICONS
-	####################################################
+	
 
 	for child in egg_container.get_children():
 
 		child.queue_free()
 
-	####################################################
+	
 	# ADD EGG ICONS
-	####################################################
+	
 
 	for egg_data in egg_stack:
 
@@ -192,9 +192,9 @@ func update_eggs(egg_stack):
 
 		egg_container.add_child(icon)
 
-####################################################
+
 # LEADERBOARD
-####################################################
+
 func show_leaderboard():
 
 	leaderboard_panel.visible = true
@@ -209,17 +209,17 @@ func hide_leaderboard():
 
 func update_leaderboard():
 
-	####################################################
+	
 	# CLEAR OLD ENTRIES
-	####################################################
+	
 
 	for child in leaderboard_entries.get_children():
 
 		child.queue_free()
 
-	####################################################
+	
 	# SORT PLAYERS BY KILLS
-	####################################################
+	
 
 	var sorted_players := []
 
@@ -235,9 +235,9 @@ func update_leaderboard():
 			return a["kills"] > b["kills"]
 	)
 
-	####################################################
+	
 	# CREATE UI LABELS
-	####################################################
+	
 
 	for entry in sorted_players:
 
@@ -250,9 +250,9 @@ func update_leaderboard():
 			)
 		)
 
-		####################################################
+		
 		# LEADERBOARD TEXT
-		####################################################
+		
 
 		label.text = (
 			username
@@ -260,9 +260,9 @@ func update_leaderboard():
 			+ str(entry["kills"])
 		)
 
-		####################################################
+		
 		# STYLE
-		####################################################
+		
 
 		label.horizontal_alignment = (
 			HORIZONTAL_ALIGNMENT_CENTER
@@ -300,17 +300,17 @@ func _on_resume_button_released() -> void:
 
 
 func _on_leave_button_released() -> void:
-	####################################################
+	
 	# CLOSE CONNECTION
-	####################################################
+	
 
 	if multiplayer.multiplayer_peer:
 
 		multiplayer.multiplayer_peer.close()
 
-	####################################################
+	
 	# RETURN TO MENU
-	####################################################
+	
 
 	get_tree().change_scene_to_file(
 		"res://scenes/Main_Menu.tscn"
@@ -321,9 +321,9 @@ func open_pause_menu():
 
 	pause_menu.visible = true
 
-	####################################################
+	
 	# HIDE GAMEPLAY UI
-	####################################################
+	
 
 	hearts_container.visible = false
 
@@ -340,9 +340,9 @@ func close_pause_menu():
 
 	pause_menu.visible = false
 
-	####################################################
+	
 	# RESTORE GAMEPLAY UI
-	####################################################
+	
 
 	hearts_container.visible = true
 
@@ -357,15 +357,15 @@ func close_pause_menu():
 
 func show_match_finished(winner_name):
 
-	####################################################
+	
 	# SHOW LEADERBOARD
-	####################################################
+	
 
 	show_leaderboard()
 
-	####################################################
+	
 	# MATCH END TEXT
-	####################################################
+	
 
 	death_label.visible = true
 

@@ -28,9 +28,9 @@ func _activate_trap():
 	active = true
 	on_cooldown = true
 
-	#####################################
+	
 	# ATTACK ANIMATION
-	#####################################
+	
 	sprite.play("attack")
 
 	# Wait until attack frame 5 begins
@@ -43,17 +43,17 @@ func _activate_trap():
 	await sprite.animation_finished
 	if not is_instance_valid(self): return # Safety Check
 
-	#####################################
+	
 	# ATTACK TO RETREAT DELAY
-	#####################################
+	
 	var attack_retreat_delay = 0.5 # TIME DELAY IN SECONDS
 	var delay_timer = get_tree().create_timer(attack_retreat_delay)
 	await delay_timer.timeout
 	if not is_instance_valid(self): return # Safety Check
 	
-	#####################################
+	
 	# RETREAT ANIMATION
-	#####################################
+	
 	sprite.play("retreat")
 
 	# Keep hitbox active until retreat frame 3 finishes
@@ -68,16 +68,16 @@ func _activate_trap():
 	await sprite.animation_finished
 	if not is_instance_valid(self): return # Safety Check
 
-	#####################################
+	
 	# Reset
-	#####################################
+	
 	sprite.play("idle")
 	# FIX: Ensure active is set to false right away so the trap can check for the player again
 	active = false 
 
-	#####################################
+	
 	# Cooldown
-	#####################################
+	
 	var cooldown_timer = get_tree().create_timer(3.0)
 	await cooldown_timer.timeout
 	
@@ -95,9 +95,9 @@ func _on_bite_enter(body):
 		body.die()
 
 
-###############################################
+##########
 # HELPER FUNCTIONS (Crash-proofed)
-###############################################
+##########
 
 func _wait_for_frame(anim_name: String, target_frame: int):
 	# CRITICAL: Check if this node is still valid before starting

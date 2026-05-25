@@ -11,9 +11,9 @@ func activate(egg, direction):
 		egg.owner_peer_id
 	)
 
-	####################################################
+	
 	# GET LEVEL
-	####################################################
+	
 
 	var level = (
 		egg.get_tree()
@@ -27,9 +27,9 @@ func activate(egg, direction):
 
 	print("Level found")
 
-	####################################################
+	
 	# FIND PLAYER
-	####################################################
+	
 
 	var player = (
 		level.players.get_node_or_null(
@@ -56,9 +56,9 @@ func activate(egg, direction):
 		player.health
 	)
 
-	####################################################
+	
 	# HEAL
-	####################################################
+	
 
 	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
 

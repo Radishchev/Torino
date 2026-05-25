@@ -14,15 +14,15 @@ extends Area2D
 
 var shooting := false
 
-####################################################
+
 # MULTIPLAYER
-####################################################
+
 
 var owner_peer_id := -1
 
-####################################################
+
 # TOUCH DAMAGE
-####################################################
+
 
 var touching_players := {}
 var last_damage_times := {}
@@ -45,9 +45,9 @@ func _ready():
 		_on_body_exited
 	)
 
-	####################################################
+	
 	# DAMAGE TIMER
-	####################################################
+	
 
 	var damage_timer = Timer.new()
 
@@ -66,15 +66,15 @@ func _ready():
 
 func _shoot():
 
-	####################################################
+	
 	# TOUCH DAMAGE
-	####################################################
+	
 
 	_damage_touching_players()
 
-	####################################################
+	
 	# SHOOT ANIMATION
-	####################################################
+	
 
 	shooting = true
 
@@ -130,9 +130,9 @@ func _spawn_bullet():
 
 		bullet.global_position = spawn_pos
 
-		####################################################
+		
 		# MULTIPLAYER OWNER
-		####################################################
+		
 
 		bullet.owner_peer_id = owner_peer_id
 
@@ -140,15 +140,15 @@ func _spawn_bullet():
 			bullet_direction
 		)
 
-####################################################
+
 # BODY ENTERED
-####################################################
+
 
 func _on_body_entered(body):
 
-	####################################################
+	
 	# MULTIPLAYER
-	####################################################
+	
 
 	if body.has_method("take_damage"):
 
@@ -160,16 +160,16 @@ func _on_body_entered(body):
 
 		return
 
-	####################################################
+	
 	# SINGLEPLAYER
-	####################################################
+	
 
 	if body.has_method("die"):
 
 		body.die()
-####################################################
+
 # BODY EXITED
-####################################################
+
 
 func _on_body_exited(body):
 
@@ -181,15 +181,15 @@ func _on_body_exited(body):
 
 		touching_players.erase(peer_id)
 
-####################################################
+
 # DAMAGE PLAYERS
-####################################################
+
 
 func _damage_touching_players():
 
-	####################################################
+	
 	# MULTIPLAYER SERVER ONLY
-	####################################################
+	
 
 	if multiplayer.has_multiplayer_peer():
 
@@ -201,9 +201,9 @@ func _damage_touching_players():
 			player.get_multiplayer_authority()
 		)
 
-		####################################################
+		
 		# DAMAGE COOLDOWN
-		####################################################
+		
 
 		var current_time = (
 			Time.get_ticks_msec()
@@ -227,9 +227,9 @@ func _damage_touching_players():
 		if !is_instance_valid(player):
 			continue
 
-		####################################################
+		
 		# MULTIPLAYER DAMAGE
-		####################################################
+		
 
 		if player.has_method("take_damage"):
 
@@ -237,9 +237,9 @@ func _damage_touching_players():
 				player.get_multiplayer_authority()
 			)
 
-			####################################################
+			
 			# HOST
-			####################################################
+			
 
 			if authority == multiplayer.get_unique_id():
 
@@ -248,9 +248,9 @@ func _damage_touching_players():
 					owner_peer_id
 				)
 
-			####################################################
+			
 			# CLIENT
-			####################################################
+			
 
 			else:
 
